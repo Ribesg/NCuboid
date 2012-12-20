@@ -1,5 +1,8 @@
 package com.github.ribesg.ncuboid;
 
+import lombok.Getter;
+
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ribesg.ncore.NCore;
@@ -7,22 +10,47 @@ import com.github.ribesg.ncore.nodes.cuboid.CuboidNode;
 
 public class NCuboid extends JavaPlugin implements CuboidNode {
 
-	@Override
-	public void afterEnable() {
-		// TODO Auto-generated method stub
+    // Core plugin
+    @Getter NCore   core;
 
-	}
+    // Useful Nodes
 
-	@Override
-	public void setCore(NCore core) {
-		// TODO Auto-generated method stub
+    // Set to true by afterEnable() call
+    // Prevent multiple calls to afterEnable
+    private boolean loadingComplete = false;
 
-	}
+    @Override
+    public void onEnable() {
+        if (!Bukkit.getPluginManager().isPluginEnabled("NCore")) {
+            // TODO
+        } else {
+            // TODO
 
-	@Override
-	public NCore getCore() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        }
+    }
+
+    public void afterEnable() {
+        if (!this.loadingComplete) {
+            this.loadingComplete = true;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+
+                @Override
+                public void run() {
+                    // Interact with other Nodes here
+
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onDisable() {
+
+    }
+
+    public void setCore(final NCore core) {
+        this.core = core;
+        core.setCuboidNode(this);
+    }
 
 }
