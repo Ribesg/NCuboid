@@ -13,7 +13,7 @@ public class CuboidImpl implements Cuboid {
 	public static enum CuboidState {
 		NORMAL, TMPSTATE1, TMPSTATE2
 	}
-	
+
 	@Getter @Setter private String name;
 	@Getter @Setter private String ownerName;
 
@@ -25,5 +25,13 @@ public class CuboidImpl implements Cuboid {
 
 	public CuboidImpl(EnumMap<Flag, Boolean> flags) {
 		this.flags = flags;
+	}
+
+	public boolean getFlag(Flag f) {
+		return flags.get(f);
+	}
+
+	public void setFlag(Flag f, boolean b) {
+		flags.put(f, b);
 	}
 }

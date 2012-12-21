@@ -7,7 +7,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ribesg.ncore.NCore;
 import com.github.ribesg.ncore.nodes.cuboid.CuboidNode;
-import com.github.ribesg.ncuboid.beans.CuboidImpl;
 
 public class NCuboid extends JavaPlugin implements CuboidNode {
 
