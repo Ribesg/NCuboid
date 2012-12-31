@@ -10,18 +10,19 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-import com.github.ribesg.ncore.nodes.cuboid.Flag;
+import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 
-public class RectCuboid extends CuboidImpl {
+public class RectCuboid extends GeneralCuboid {
     @Getter @Setter private Location minCorner, maxCorner;
     @Getter @Setter private long     minX, maxX, minY, maxY, minZ, maxZ;
 
     // Create a new Rectangular Cuboid
     public RectCuboid(final String cuboidName, final String ownerName, final World world, final Location minCorner) {
 
-        super(cuboidName, ownerName, world);
+        super(cuboidName, ownerName, world, CuboidType.RECT);
 
         setMinCorner(minCorner);
+        setChunks(null);
     }
 
     // Create a Rectangular Cuboid from a save
@@ -67,6 +68,7 @@ public class RectCuboid extends CuboidImpl {
                 welcomeMessage,
                 farewellMessage,
                 chunks,
+                CuboidType.RECT,
                 allowedPlayers,
                 allowedGroups,
                 disallowedCommands,
@@ -96,24 +98,20 @@ public class RectCuboid extends CuboidImpl {
 
     // The player select the second corner
     public void secondPoint(final Location secondPoint) {
-        setMinX(getMinCorner().getBlockX() < secondPoint.getBlockX() ? getMinCorner().getBlockX() : secondPoint.getBlockX());
-        setMinY(getMinCorner().getBlockY() < secondPoint.getBlockY() ? getMinCorner().getBlockY() : secondPoint.getBlockY());
-        setMinZ(getMinCorner().getBlockZ() < secondPoint.getBlockZ() ? getMinCorner().getBlockZ() : secondPoint.getBlockZ());
-        setMaxX(getMinX() == secondPoint.getBlockX() ? getMaxCorner().getBlockX() : secondPoint.getBlockX());
-        setMaxY(getMinY() == secondPoint.getBlockY() ? getMaxCorner().getBlockY() : secondPoint.getBlockY());
-        setMaxZ(getMinZ() == secondPoint.getBlockZ() ? getMaxCorner().getBlockZ() : secondPoint.getBlockZ());
-        setMinCorner(new Location(getWorld(), getMinX(), getMinY(), getMinZ()));
-        setMaxCorner(new Location(getWorld(), getMaxX(), getMaxY(), getMaxZ()));
-        setState(CuboidState.TMPSTATE2);
+        if (secondPoint.getWorld().getName().equals(getWorld().getName())) {
+            setMinX(getMinCorner().getBlockX() < secondPoint.getBlockX() ? getMinCorner().getBlockX() : secondPoint.getBlockX());
+            setMinY(getMinCorner().getBlockY() < secondPoint.getBlockY() ? getMinCorner().getBlockY() : secondPoint.getBlockY());
+            setMinZ(getMinCorner().getBlockZ() < secondPoint.getBlockZ() ? getMinCorner().getBlockZ() : secondPoint.getBlockZ());
+            setMaxX(getMinX() == secondPoint.getBlockX() ? getMaxCorner().getBlockX() : secondPoint.getBlockX());
+            setMaxY(getMinY() == secondPoint.getBlockY() ? getMaxCorner().getBlockY() : secondPoint.getBlockY());
+            setMaxZ(getMinZ() == secondPoint.getBlockZ() ? getMaxCorner().getBlockZ() : secondPoint.getBlockZ());
+            setMinCorner(new Location(getWorld(), getMinX(), getMinY(), getMinZ()));
+            setMaxCorner(new Location(getWorld(), getMaxX(), getMaxY(), getMaxZ()));
+            setState(CuboidState.TMPSTATE2);
+        }
     }
 
-    // Check if a location is in the Cuboid
-    @Override
-    public boolean contains(final Location loc) {
-        return this.contains(loc.getX(), loc.getY(), loc.getZ());
-    }
-
-    // Check if <x,y,z> is in a Cuboid 
+    // Check if <x,y,z> is in a Cuboid
     @Override
     public boolean contains(final double x, final double y, final double z) {
         // Do not use getters here to be faster

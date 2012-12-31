@@ -10,15 +10,19 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-import com.github.ribesg.ncore.nodes.cuboid.Cuboid;
-import com.github.ribesg.ncore.nodes.cuboid.Flag;
+import com.github.ribesg.ncore.nodes.cuboid.beans.Cuboid;
+import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 
-public abstract class CuboidImpl implements Cuboid {
+public abstract class GeneralCuboid extends Cuboid {
 
     public static enum CuboidState {
         NORMAL, // Normal Cuboid
         TMPSTATE1, // First point selected
         TMPSTATE2 // All points selected, waiting for "/cuboid create" command
+    }
+
+    public static enum CuboidType {
+        RECT, // RectCuboid
     }
 
     // Identification / informations related
@@ -30,6 +34,7 @@ public abstract class CuboidImpl implements Cuboid {
     @Getter @Setter private String        welcomeMessage;
     @Getter @Setter private String        farewellMessage;
     @Getter @Setter private Set<ChunkKey> chunks;
+    @Getter @Setter private CuboidType    type;
 
     // Protection related
     @Getter @Setter private Set<String>   allowedPlayers;
@@ -56,7 +61,7 @@ public abstract class CuboidImpl implements Cuboid {
     @Getter private Integer               feedMaximumPlayerFood;
 
     // Create a new Cuboid, when user select points etc
-    public CuboidImpl(final String cuboidName, final String ownerName, final World world) {
+    public GeneralCuboid(final String cuboidName, final String ownerName, final World world, final CuboidType type) {
 
         setCuboidName(cuboidName);
         setOwnerName(ownerName);
@@ -83,7 +88,7 @@ public abstract class CuboidImpl implements Cuboid {
     }
 
     // Create a Cuboid from a save
-    public CuboidImpl(
+    public GeneralCuboid(
             final String cuboidName,
             final String ownerName,
             final World world,
@@ -92,6 +97,7 @@ public abstract class CuboidImpl implements Cuboid {
             final String welcomeMessage,
             final String farewellMessage,
             final Set<ChunkKey> chunks,
+            final CuboidType type,
             final Set<String> allowedPlayers,
             final Set<String> allowedGroups,
             final Set<String> disallowedCommands,
@@ -117,6 +123,7 @@ public abstract class CuboidImpl implements Cuboid {
         setWelcomeMessage(welcomeMessage);
         setFarewellMessage(farewellMessage);
         setChunks(chunks);
+        setType(type);
         setAllowedPlayers(allowedPlayers);
         setAllowedGroups(allowedGroups);
         setDisallowedCommands(disallowedCommands);
@@ -135,6 +142,7 @@ public abstract class CuboidImpl implements Cuboid {
         setFeedMaximumPlayerFood(feedMinimumPlayerFood);
     }
 
+    // About boolean flags
     public boolean getFlag(final Flag f) {
         return flags.get(f);
     }
@@ -143,6 +151,7 @@ public abstract class CuboidImpl implements Cuboid {
         flags.put(f, b);
     }
 
+    // About Heal/Feed flags values
     public void setHealTimer(Integer healTimer) {
         if (healTimer >= 5) {
             this.healTimer = healTimer;
@@ -199,7 +208,40 @@ public abstract class CuboidImpl implements Cuboid {
         }
     }
 
-    public abstract boolean contains(final Location loc);
+    // Location check
+    public boolean contains(final Location loc) {
+        return contains(loc.getX(), loc.getY(), loc.getZ());
+    }
 
     public abstract boolean contains(final double x, final double y, final double z);
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (cuboidName == null ? 0 : cuboidName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GeneralCuboid other = (GeneralCuboid) obj;
+        if (cuboidName == null) {
+            if (other.cuboidName != null) {
+                return false;
+            }
+        } else if (!cuboidName.equals(other.cuboidName)) {
+            return false;
+        }
+        return true;
+    }
 }
