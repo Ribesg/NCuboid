@@ -1,7 +1,14 @@
 package com.github.ribesg.ncuboid.listeners.flag;
 
-import org.bukkit.event.Listener;
+import com.github.ribesg.ncuboid.NCuboid;
+import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
-public class GodFlagListener implements Listener {
+public class GodFlagListener extends AbstractListener {
+
+    public GodFlagListener(final NCuboid instance) {
+        super(instance);
+    }
+
     // TODO
+
 }

@@ -1,7 +1,14 @@
 package com.github.ribesg.ncuboid.listeners.flag;
 
-import org.bukkit.event.Listener;
+import com.github.ribesg.ncuboid.NCuboid;
+import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
-public class SnowFlagListener implements Listener {
+public class SnowFlagListener extends AbstractListener {
+
+    public SnowFlagListener(final NCuboid instance) {
+        super(instance);
+    }
+
     // TODO
+
 }

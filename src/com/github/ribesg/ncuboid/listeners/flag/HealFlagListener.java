@@ -1,7 +1,14 @@
 package com.github.ribesg.ncuboid.listeners.flag;
 
-import org.bukkit.event.Listener;
+import com.github.ribesg.ncuboid.NCuboid;
+import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
-public class HealFlagListener implements Listener {
+public class HealFlagListener extends AbstractListener {
+
+    public HealFlagListener(final NCuboid instance) {
+        super(instance);
+    }
+
     // TODO
+
 }

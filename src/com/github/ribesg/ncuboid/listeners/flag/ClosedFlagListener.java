@@ -1,12 +1,17 @@
 package com.github.ribesg.ncuboid.listeners.flag;
 
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
+import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.events.PlayerMoveBlockNEvent;
+import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
-public class ClosedFlagListener implements Listener {
+public class ClosedFlagListener extends AbstractListener {
+
+    public ClosedFlagListener(final NCuboid instance) {
+        super(instance);
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMoveBlock(final PlayerMoveBlockNEvent event) {

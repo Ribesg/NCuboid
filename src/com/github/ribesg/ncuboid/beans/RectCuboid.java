@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 
-public class RectCuboid extends GeneralCuboid {
+public class RectCuboid extends PlayerCuboid {
     @Getter @Setter private Location minCorner, maxCorner;
     @Getter @Setter private long     minX, maxX, minY, maxY, minZ, maxZ;
 
@@ -116,5 +116,10 @@ public class RectCuboid extends GeneralCuboid {
     public boolean contains(final double x, final double y, final double z) {
         // Do not use getters here to be faster
         return minX <= x && maxX + 1 > x && minY <= y && maxY + 1 > y && minZ <= z && maxZ + 1 > z;
+    }
+
+    @Override
+    public String getSizeString() {
+        return new StringBuilder().append(maxX - minX + 1).append('x').append(maxY - minY + 1).append('x').append(maxZ - minZ + 1).toString();
     }
 }
