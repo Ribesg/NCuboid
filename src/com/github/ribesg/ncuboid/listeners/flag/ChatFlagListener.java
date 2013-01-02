@@ -1,6 +1,7 @@
 package com.github.ribesg.ncuboid.listeners.flag;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
@@ -15,7 +16,7 @@ public class ChatFlagListener extends AbstractListener {
         super(instance);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
         final PlayerCuboid c = CuboidDB.getInstance().getPriorByLoc(event.getPlayer().getLocation());
         if (c.getFlags().get(Flag.CHAT) && !c.getRights().isAllowedPlayer(event.getPlayer())) {

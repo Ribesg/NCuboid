@@ -33,7 +33,7 @@ public class BuildFlagListener extends AbstractListener {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
         if (cuboid == null) {
@@ -44,7 +44,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerBucketFill(final PlayerBucketFillEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlockClicked().getLocation());
         if (cuboid == null) {
@@ -55,7 +55,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     // We don't care if hasBlock()==false, so ignoreCancelled is true
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.hasBlock()) {
@@ -94,7 +94,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockBreak(final BlockBreakEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
         if (cuboid != null && cuboid.getFlags().get(Flag.BUILD) && !cuboid.getRights().isAllowedPlayer(event.getPlayer())) {
@@ -104,7 +104,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPlace(final BlockPlaceEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
         if (cuboid != null && cuboid.getFlags().get(Flag.BUILD) && !cuboid.getRights().isAllowedPlayer(event.getPlayer())) {
@@ -114,7 +114,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockDamage(final BlockDamageEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
         if (cuboid != null && cuboid.getFlags().get(Flag.BUILD) && !cuboid.getRights().isAllowedPlayer(event.getPlayer())) {
@@ -124,7 +124,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onHangingBreakByEntity(final HangingBreakByEntityEvent event) {
         final HangingBreakEventExtension ext = (HangingBreakEventExtension) EventExtensionHandler.get(event);
         if (event.getRemover().getType() == EntityType.PLAYER) {
@@ -137,7 +137,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onHangingPlace(final HangingPlaceEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getEntity().getLocation());
         if (cuboid != null && cuboid.getFlags().get(Flag.BUILD) && !cuboid.getRights().isAllowedPlayer(event.getPlayer())) {
@@ -147,7 +147,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onVehicleDestroy(final VehicleDestroyEvent event) {
         if (event.getAttacker().getType() == EntityType.PLAYER) {
             final Player player = (Player) event.getAttacker();
@@ -160,7 +160,7 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onStructureGrow(final StructureGrowEvent event) {
         if (event.isFromBonemeal()) {
             final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getLocation());

@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -13,6 +14,7 @@ import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.events.EventExtensionHandler;
 import com.github.ribesg.ncuboid.events.extensions.EntityExplodeEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.HangingBreakEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.PlayerDropItemEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEntityEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
@@ -81,6 +83,17 @@ public class EventExtensionListener extends AbstractListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityExplodeLast(final EntityExplodeEvent event) {
+        EventExtensionHandler.remove(event);
+    }
+
+    // PlayerDropItemEvent
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerDropItemFirst(final PlayerDropItemEvent event) {
+        EventExtensionHandler.add(new PlayerDropItemEventExtension(event));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerDropItemLast(final PlayerDropItemEvent event) {
         EventExtensionHandler.remove(event);
     }
 }

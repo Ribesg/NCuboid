@@ -22,7 +22,7 @@ public class ChestFlagListener extends AbstractListener {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     // We don't care if hasBlock()==false, so ignoreCancelled is true
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.hasBlock()) {
@@ -44,7 +44,7 @@ public class ChestFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerInteractEntity(final PlayerInteractEntityEvent event) {
         final PlayerInteractEntityEventExtension ext = (PlayerInteractEntityEventExtension) EventExtensionHandler.get(event);
         if (ext.getCuboid() != null && ext.getCuboid().getFlags().get(Flag.CHEST) && !ext.getCuboid().getRights().isAllowedPlayer(event.getPlayer())) {
@@ -61,7 +61,7 @@ public class ChestFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEntityExplode(final EntityExplodeEvent event) {
         final EntityExplodeEventExtension ext = (EntityExplodeEventExtension) EventExtensionHandler.get(event);
         for (final Block b : ext.getBlockCuboidsMap().keySet()) {

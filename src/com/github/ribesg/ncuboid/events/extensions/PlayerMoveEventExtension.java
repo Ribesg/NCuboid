@@ -1,6 +1,7 @@
 package com.github.ribesg.ncuboid.events.extensions;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -14,11 +15,17 @@ public class PlayerMoveEventExtension extends EventExtension {
 
     @Getter private final PlayerCuboid fromCuboid;
     @Getter private final PlayerCuboid toCuboid;
+    @Setter private boolean            customCancelled;
 
     public PlayerMoveEventExtension(final PlayerMoveEvent event) {
         super(event);
         fromCuboid = CuboidDB.getInstance().getPriorByLoc(event.getFrom());
         toCuboid = CuboidDB.getInstance().getPriorByLoc(event.getTo());
+        customCancelled = false;
+    }
+
+    public boolean isCustomCancelled() {
+        return customCancelled;
     }
 
 }
