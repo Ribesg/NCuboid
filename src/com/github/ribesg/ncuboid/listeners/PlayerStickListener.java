@@ -3,17 +3,21 @@ package com.github.ribesg.ncuboid.listeners;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ribesg.ncore.Utils;
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.beans.CuboidDB;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid.CuboidState;
-import com.github.ribesg.ncuboid.events.PlayerInteractNEvent;
+import com.github.ribesg.ncuboid.events.EventExtensionHandler;
+import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
 import com.github.ribesg.ncuboid.lang.Messages;
 import com.github.ribesg.ncuboid.lang.Messages.MessageId;
 
@@ -23,30 +27,31 @@ public class PlayerStickListener extends AbstractListener {
         super(instance);
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerInteract(final PlayerInteractNEvent event) {
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.hasItem() && event.getItem().getType() == Material.STICK) {
             final Action action = event.getAction();
             final Player p = event.getPlayer();
-            switch (action) {
-                case RIGHT_CLICK_BLOCK:
+            if (event.hasBlock()) {
+                final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
+                if (action == Action.RIGHT_CLICK_BLOCK) {
                     // Selection tool
-                    final PlayerCuboid selection = event.getCuboid();
+                    final PlayerCuboid selection = ext.getCuboid();
+                    final Location clickedBlockLocation = event.getClickedBlock().getLocation();
                     if (selection == null) {
-                        getPlugin().sendMessage(p, MessageId.firstPointSelected, Utils.toString(event.getClickedBlockLocation()));
+                        getPlugin().sendMessage(p, MessageId.firstPointSelected, Utils.toString(clickedBlockLocation));
                     } else if (selection.getState() == CuboidState.TMPSTATE1) {
-                        getPlugin().sendMessage(p, MessageId.secondPointSelected, Utils.toString(event.getClickedBlockLocation()), selection.getSizeString());
+                        getPlugin().sendMessage(p, MessageId.secondPointSelected, Utils.toString(clickedBlockLocation), selection.getSizeString());
                     } else if (selection.getState() == CuboidState.TMPSTATE2) {
-                        if (selection.contains(event.getClickedBlockLocation())) {
+                        if (selection.contains(clickedBlockLocation)) {
                             getPlugin().sendMessage(p, MessageId.blockInSelection);
                         } else {
                             getPlugin().sendMessage(p, MessageId.blockNotInSelection);
                         }
                     }
-                    break;
-                case LEFT_CLICK_BLOCK:
+                } else { // Action.LEFT_CLICK_BLOCK
                     // Info tool
-                    final Set<PlayerCuboid> cuboids = event.getCuboids();
+                    final Set<PlayerCuboid> cuboids = ext.getCuboids();
                     if (cuboids == null || cuboids.size() == 0) {
                         getPlugin().sendMessage(p, MessageId.blockNotProtected);
                     } else if (cuboids.size() == 1) {
@@ -61,19 +66,18 @@ public class PlayerStickListener extends AbstractListener {
                         Arrays.sort(strings);
                         getPlugin().sendMessage(p, MessageId.blockProtectedMultipleCuboids, Messages.merge(strings));
                     }
-                    break;
-                case RIGHT_CLICK_AIR:
-                case LEFT_CLICK_AIR:
-                    // Selection reset
-                    final PlayerCuboid deletedCuboid = CuboidDB.getInstance().delTmp(p.getName());
-                    if (deletedCuboid == null) {
-                        getPlugin().sendMessage(p, MessageId.selectionReset);
-                    } else {
-                        getPlugin().sendMessage(p, MessageId.noSelection);
-                    }
-                    break;
-                default:
-                    return;
+                }
+            }
+            else if (action == Action.RIGHT_CLICK_AIR || action == Action.LEFT_CLICK_AIR) {
+                // Selection reset
+                final PlayerCuboid deletedCuboid = CuboidDB.getInstance().delTmp(p.getName());
+                if (deletedCuboid == null) {
+                    getPlugin().sendMessage(p, MessageId.selectionReset);
+                } else {
+                    getPlugin().sendMessage(p, MessageId.noSelection);
+                }
+            } else {
+                return;
             }
             event.setCancelled(true);
         }

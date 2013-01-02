@@ -2,10 +2,12 @@ package com.github.ribesg.ncuboid.listeners.flag;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.PlayerMoveBlockNEvent;
+import com.github.ribesg.ncuboid.events.EventExtensionHandler;
+import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class BoosterFlagListener extends AbstractListener {
@@ -15,9 +17,12 @@ public class BoosterFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerMoveBlock(final PlayerMoveBlockNEvent event) {
-        if (event.getToCuboid() != null && event.getToCuboid().getFlag(Flag.BOOSTER)) {
-            event.getPlayer().setVelocity(event.getToCuboid().getBoosterVector());
+    public void onPlayerMoveBlock(final PlayerMoveEvent event) {
+        if (EventExtensionHandler.containsEvent(event)) {
+            final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
+            if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.BOOSTER)) {
+                event.getPlayer().setVelocity(ext.getToCuboid().getBoosterVector());
+            }
         }
     }
 }

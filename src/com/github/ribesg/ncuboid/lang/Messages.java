@@ -1,19 +1,22 @@
 package com.github.ribesg.ncuboid.lang;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.EnumMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import lombok.Getter;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Messages {
@@ -29,12 +32,12 @@ public class Messages {
         firstPointSelected,
         noSelection,
         secondPointSelected,
-        selectionReset,
+        selectionReset
 
     }
 
     public static final String LINE_SEPARATOR = "%%";
-    public static final String MESSAGE_HEADER = ChatColor.BLACK + "[" + ChatColor.UNDERLINE + ChatColor.GOLD + "NCuboid" + ChatColor.RESET + ChatColor.BLACK + "]" + ChatColor.WHITE;
+    public static final String MESSAGE_HEADER = "§0§l[§6§lNCuboid§0§l] §f";
     private static Messages    instance;
 
     public static Messages getInstance() {
@@ -44,23 +47,27 @@ public class Messages {
         return instance;
     }
 
-    @Getter private Map<MessageId, Message> messagesMap; // Id ; Message
+    @Getter private EnumMap<MessageId, Message> messagesMap; // Id ; Message
 
     public Messages() {
         messagesMap = new EnumMap<>(MessageId.class);
     }
 
     public void loadConfig(final Path pathMessages) throws IOException {
+        messagesMap = getDefaultConfig();
         if (!Files.exists(pathMessages)) {
-            messagesMap = getDefaultConfig();
             newConfig(pathMessages);
         } else {
-            final YamlConfiguration cMessages = YamlConfiguration.loadConfiguration(pathMessages.toFile());
-            final Map<MessageId, Message> defaultMessages = getDefaultConfig();
+            final FileConfiguration cMessages = new YamlConfiguration();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(pathMessages, StandardOpenOption.READ), StandardCharsets.UTF_8))) {
+                cMessages.loadFromString(reader.toString());
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
             for (final String idString : cMessages.getKeys(false)) {
                 try {
                     final MessageId id = MessageId.valueOf(idString);
-                    final Message def = defaultMessages.get(id);
+                    final Message def = messagesMap.get(id);
                     messagesMap.put(id, new Message(id, def.getDefaultMessage(), def.getAwaitedArgs(), cMessages.getString(idString, def.getDefaultMessage())));
                 } catch (final IllegalArgumentException e) {
                     e.printStackTrace();
@@ -72,7 +79,7 @@ public class Messages {
     }
 
     // Precond : fMessages does not exist
-    public Map<MessageId, Message> getDefaultConfig() {
+    public EnumMap<MessageId, Message> getDefaultConfig() {
         final Set<Message> newMessages = new HashSet<Message>();
 
         // PlayerStickListener
@@ -86,7 +93,7 @@ public class Messages {
         newMessages.add(new Message(MessageId.selectionReset, "Your selection has been reset", null, null));
         newMessages.add(new Message(MessageId.noSelection, "You have no selection to reset", null, null));
 
-        final Map<MessageId, Message> map = new EnumMap<MessageId, Message>(MessageId.class);
+        final EnumMap<MessageId, Message> map = new EnumMap<MessageId, Message>(MessageId.class);
         for (final Message m : newMessages) {
             map.put(m.getId(), m);
         }
@@ -102,13 +109,19 @@ public class Messages {
     }
 
     private void writeConfig(final Path pathMessages, final boolean overwrite) throws IOException {
-        try (BufferedWriter w = Files.newBufferedWriter(pathMessages, StandardCharsets.UTF_8, overwrite ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
+        try (BufferedWriter stream = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(pathMessages, overwrite ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE), StandardCharsets.UTF_8))) {
+            final StringBuilder content = new StringBuilder();
+            content.append("################################################################################\n");
+            content.append("# List of NCuboid messages. You're free to change text/colors/language here.   #\n");
+            content.append("# Supports both '§' and '&' characters for colors.                      Ribesg #\n");
+            content.append("################################################################################\n\n");
             for (final Message m : getMessagesMap().values()) {
                 getMessagesMap().put(m.getId(), m);
-                w.append("# Default value    : " + m.getDefaultMessage() + '\n');
-                w.append("# Awaited arguments: " + m.getAwaitedArgsString() + '\n');
-                w.append(m.getId() + ": \"" + m.getConfigMessage() == null ? m.getConfigMessage() : m.getDefaultMessage() + "\"\n\n");
+                content.append("# Default value    : " + m.getDefaultMessage() + '\n');
+                content.append("# Awaited arguments: " + m.getAwaitedArgsString() + '\n');
+                content.append(m.getId().name() + ": \"" + (m.getConfigMessage() != null ? m.getConfigMessage() : m.getDefaultMessage()) + "\"\n\n");
             }
+            stream.write(content.toString());
         }
     }
 
@@ -120,10 +133,16 @@ public class Messages {
                 throw new IllegalArgumentException("Call to Messages.get(id,args...) with wrong number of args : " + (args == null ? 0 : args.length) + " (awaited : " + m.getAwaitedArgsNb() + ")");
             }
             String res = m.getConfigMessage() == null ? m.getDefaultMessage() : m.getConfigMessage();
+            // Replacing args by there values
             for (int i = 0; i < m.getAwaitedArgsNb(); i++) {
                 res = res.replace(m.getAwaitedArgs()[i], args[i]);
             }
-            return res.split(LINE_SEPARATOR);
+            // Adding Header, colors
+            final String[] resSplit = res.concat(LINE_SEPARATOR).split(LINE_SEPARATOR);
+            for (int i = 0; i < resSplit.length; i++) {
+                resSplit[i] = MESSAGE_HEADER + ChatColor.translateAlternateColorCodes('&', resSplit[i]);
+            }
+            return resSplit;
         } catch (final IllegalArgumentException e) {
             e.printStackTrace();
             return new String[] { MESSAGE_HEADER + ChatColor.RED + "Something gone wrong, see console" };

@@ -60,6 +60,8 @@ public abstract class PlayerCuboid extends GeneralCuboid {
             final CuboidType type,
             final Set<String> allowedPlayers,
             final Set<String> allowedGroups,
+            final Set<String> disallowedPlayers,
+            final Set<String> disallowedGroups,
             final Set<String> disallowedCommands,
             final int priority,
             final EnumMap<Flag, Boolean> flags,
@@ -69,13 +71,29 @@ public abstract class PlayerCuboid extends GeneralCuboid {
             final Integer healQuantity,
             final Integer healTimer,
             final Integer healMinimumPlayerHealth,
-            final Integer healMaximumPlayerFood,
+            final Integer healMaximumPlayerHealth,
             final Integer feedQuantity,
             final Integer feedTimer,
             final Integer feedMinimumPlayerFood,
             final Integer feedMaximumPlayerFood) {
 
-        super(world, type);
+        super(world,
+                type,
+                allowedPlayers,
+                allowedGroups,
+                disallowedPlayers,
+                disallowedGroups,
+                disallowedCommands,
+                priority,
+                flags,
+                healQuantity,
+                healTimer,
+                healMinimumPlayerHealth,
+                healMaximumPlayerHealth,
+                feedQuantity,
+                feedTimer,
+                feedMinimumPlayerFood,
+                feedMaximumPlayerFood);
         setCuboidName(cuboidName);
         setOwnerName(ownerName);
         setState(state);

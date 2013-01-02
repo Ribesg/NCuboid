@@ -18,7 +18,7 @@ public class ChatFlagListener extends AbstractListener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerChat(final AsyncPlayerChatEvent event) {
         final PlayerCuboid c = CuboidDB.getInstance().getPriorByLoc(event.getPlayer().getLocation());
-        if (c.getFlag(Flag.CHAT)) {
+        if (c.getFlag(Flag.CHAT) && !c.isAllowed(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

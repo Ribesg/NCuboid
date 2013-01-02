@@ -20,11 +20,13 @@ public class CuboidDB extends com.github.ribesg.ncore.nodes.cuboid.beans.CuboidD
         return instance;
     }
 
-    private final Map<String, PlayerCuboid>        byName;    // CuboidName ; Cuboid
-    private final Map<String, Set<PlayerCuboid>>   byOwner;   // OwnerName ; Cuboids of this owner
-    private final Map<String, PlayerCuboid>        tmpCuboids; // OwnerName ; Temporary Cuboid (Owner's Selection)
-    private final Map<ChunkKey, Set<PlayerCuboid>> byChunks;  // Chunk ; Cuboids in this chunk
-    private final Map<String, WorldCuboid>         byWorld;   // WorldName ; Cuboid
+    @SuppressWarnings("unused") private final NCuboid plugin;
+
+    private final Map<String, PlayerCuboid>           byName;    // CuboidName ; Cuboid
+    private final Map<String, Set<PlayerCuboid>>      byOwner;   // OwnerName ; Cuboids of this owner
+    private final Map<String, PlayerCuboid>           tmpCuboids; // OwnerName ; Temporary Cuboid (Owner's Selection)
+    private final Map<ChunkKey, Set<PlayerCuboid>>    byChunks;  // Chunk ; Cuboids in this chunk
+    private final Map<String, WorldCuboid>            byWorld;   // WorldName ; Cuboid
 
     public CuboidDB(final NCuboid instance) {
         byName = new HashMap<String, PlayerCuboid>();
@@ -32,6 +34,7 @@ public class CuboidDB extends com.github.ribesg.ncore.nodes.cuboid.beans.CuboidD
         tmpCuboids = new HashMap<String, PlayerCuboid>();
         byChunks = new HashMap<ChunkKey, Set<PlayerCuboid>>();
         byWorld = new HashMap<String, WorldCuboid>();
+        plugin = instance;
         CuboidDB.instance = this;
     }
 

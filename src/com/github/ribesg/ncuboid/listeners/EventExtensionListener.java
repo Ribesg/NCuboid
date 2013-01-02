@@ -1,6 +1,5 @@
 package com.github.ribesg.ncuboid.listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -8,8 +7,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.PlayerInteractNEvent;
-import com.github.ribesg.ncuboid.events.PlayerMoveBlockNEvent;
+import com.github.ribesg.ncuboid.events.EventExtensionHandler;
+import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
 
 public class EventExtensionListener extends AbstractListener {
 
@@ -17,17 +17,31 @@ public class EventExtensionListener extends AbstractListener {
         super(instance);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerMove(final PlayerMoveEvent event) {
+    // PlayerMoveBlockEvent
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerMoveFirst(final PlayerMoveEvent event) {
         final Location from = event.getFrom(), to = event.getTo();
         if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
-            final PlayerMoveBlockNEvent newEvent = new PlayerMoveBlockNEvent(event);
-            Bukkit.getServer().getPluginManager().callEvent(newEvent);
+            final PlayerMoveEventExtension ext = new PlayerMoveEventExtension(event);
+            EventExtensionHandler.add(ext);
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerInteract(final PlayerInteractEvent event) {
-        Bukkit.getServer().getPluginManager().callEvent(new PlayerInteractNEvent(event));
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerMoveFinally(final PlayerMoveEvent event) {
+        EventExtensionHandler.remove(event);
+    }
+
+    // PlayerInteractEvent
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerInteractFirst(final PlayerInteractEvent event) {
+        if (event.hasBlock()) {
+            EventExtensionHandler.add(new PlayerInteractEventExtension(event));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerInteractLast(final PlayerInteractEvent event) {
+        EventExtensionHandler.remove(event);
     }
 }

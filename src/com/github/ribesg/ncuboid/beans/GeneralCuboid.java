@@ -8,7 +8,9 @@ import lombok.Setter;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
+import com.github.ribesg.ncore.Permissions;
 import com.github.ribesg.ncore.nodes.cuboid.beans.Cuboid;
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 
@@ -26,6 +28,8 @@ public abstract class GeneralCuboid extends Cuboid {
     // Protection related
     @Getter @Setter private Set<String>  allowedPlayers;
     @Getter @Setter private Set<String>  allowedGroups;
+    @Getter @Setter private Set<String>  disallowedPlayers;
+    @Getter @Setter private Set<String>  disallowedGroups;
     @Getter @Setter private Set<String>  disallowedCommands;
     @Getter @Setter private int          priority;
 
@@ -47,8 +51,11 @@ public abstract class GeneralCuboid extends Cuboid {
     // Create a new Cuboid, when user select points etc
     public GeneralCuboid(final World world, final CuboidType type) {
         setWorld(world);
+        setType(type);
         setAllowedPlayers(null);
         setAllowedGroups(null);
+        setDisallowedPlayers(null);
+        setDisallowedGroups(null);
         setDisallowedCommands(null);
         setPriority(0);
         flags = Flag.getDefaultFlagMap();
@@ -60,6 +67,43 @@ public abstract class GeneralCuboid extends Cuboid {
         setFeedTimer(null);
         setFeedMinimumPlayerFood(null);
         setFeedMaximumPlayerFood(null);
+    }
+
+    public GeneralCuboid(
+            final World world,
+            final CuboidType type,
+            final Set<String> allowedPlayers,
+            final Set<String> allowedGroups,
+            final Set<String> disallowedPlayers,
+            final Set<String> disallowedGroups,
+            final Set<String> disallowedCommands,
+            final int priority,
+            final EnumMap<Flag, Boolean> flags,
+            final Integer healQuantity,
+            final Integer healTimer,
+            final Integer healMinimumPlayerHealth,
+            final Integer healMaximumPlayerHealth,
+            final Integer feedQuantity,
+            final Integer feedTimer,
+            final Integer feedMinimumPlayerFood,
+            final Integer feedMaximumPlayerFood) {
+        setWorld(world);
+        setType(type);
+        setAllowedPlayers(allowedPlayers);
+        setAllowedGroups(allowedGroups);
+        setDisallowedPlayers(disallowedPlayers);
+        setDisallowedGroups(disallowedGroups);
+        setDisallowedCommands(disallowedCommands);
+        setPriority(priority);
+        this.flags = flags;
+        setHealQuantity(healQuantity);
+        setHealTimer(healTimer);
+        setHealMinimumPlayerHealth(healMinimumPlayerHealth);
+        setHealMaximumPlayerHealth(healMaximumPlayerHealth);
+        setFeedQuantity(feedQuantity);
+        setFeedTimer(feedTimer);
+        setFeedMinimumPlayerFood(feedMinimumPlayerFood);
+        setFeedMaximumPlayerFood(feedMaximumPlayerFood);
     }
 
     // About boolean flags
@@ -130,4 +174,18 @@ public abstract class GeneralCuboid extends Cuboid {
 
     // Location check
     public abstract boolean contains(final Location loc);
+
+    // Permissions check
+    public boolean isAllowed(final Player p) {
+        // TODO Handle Groups
+        return p.isOp() || p.hasPermission(Permissions.ADMIN) || isAllowedPlayerName(p.getName());
+    }
+
+    public boolean isAllowedPlayerName(final String playerName) {
+        return (disallowedPlayers == null || disallowedPlayers.contains(playerName)) && (allowedPlayers == null || allowedPlayers.contains(playerName));
+    }
+
+    public boolean isAllowedGroupName(final String groupName) {
+        return (disallowedGroups == null || disallowedGroups.contains(groupName)) && (allowedGroups == null || allowedGroups.contains(groupName));
+    }
 }

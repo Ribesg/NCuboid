@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginManager;
 
 import com.github.ribesg.ncore.NCore;
 import com.github.ribesg.ncore.nodes.cuboid.CuboidNode;
+import com.github.ribesg.ncuboid.beans.CuboidDB;
 import com.github.ribesg.ncuboid.lang.Messages;
 import com.github.ribesg.ncuboid.lang.Messages.MessageId;
 import com.github.ribesg.ncuboid.listeners.EventExtensionListener;
@@ -49,7 +50,7 @@ public class NCuboid extends CuboidNode {
     // // None
 
     // Files
-    Path                       pathMessages    = Paths.get(getDataFolder().getPath(), "messages.yml");
+    Path                       pathMessages;
 
     // Set to true by afterEnable() call
     // Prevent multiple calls to afterEnable
@@ -59,6 +60,10 @@ public class NCuboid extends CuboidNode {
     public void onEnable() {
         // Messages first !
         try {
+            if (!getDataFolder().isDirectory()) {
+                getDataFolder().mkdir();
+            }
+            pathMessages = Paths.get(getDataFolder().getPath(), "messages.yml");
             Messages.getInstance().loadConfig(pathMessages);
         } catch (final IOException e) {
             e.printStackTrace();
@@ -67,13 +72,10 @@ public class NCuboid extends CuboidNode {
         }
 
         // Dependencies handling
-        if (!Bukkit.getPluginManager().isPluginEnabled(NCORE)) {
-            // TODO
-        } else {
-            core = (NCore) Bukkit.getPluginManager().getPlugin(NCORE);
-            // TODO
-            afterEnable();
-        }
+        core = (NCore) Bukkit.getPluginManager().getPlugin(NCORE);
+
+        // Create the CuboidDB
+        new CuboidDB(this);
 
         // Listeners
         final PluginManager pm = getServer().getPluginManager();
@@ -102,6 +104,8 @@ public class NCuboid extends CuboidNode {
         pm.registerEvents(new TeleportFlagListener(this), this);
         pm.registerEvents(new UseFlagListener(this), this);
         pm.registerEvents(new WarpgateFlagListener(this), this);
+
+        afterEnable();
     }
 
     private void afterEnable() {
@@ -120,7 +124,6 @@ public class NCuboid extends CuboidNode {
 
     @Override
     public void onDisable() {
-
     }
 
     public void setCore(final NCore core) {
