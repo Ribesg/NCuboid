@@ -55,7 +55,8 @@ public class BuildFlagListener extends AbstractListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    // We don't care if hasBlock()==false, so ignoreCancelled is true
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.hasBlock()) {
             if (event.hasItem() && event.getItem().getType() == Material.STICK) {
