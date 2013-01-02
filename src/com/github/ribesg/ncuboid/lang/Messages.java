@@ -3,8 +3,6 @@ package com.github.ribesg.ncuboid.lang;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +14,6 @@ import java.util.Set;
 import lombok.Getter;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Messages {
@@ -58,9 +55,9 @@ public class Messages {
         if (!Files.exists(pathMessages)) {
             newConfig(pathMessages);
         } else {
-            final FileConfiguration cMessages = new YamlConfiguration();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(pathMessages, StandardOpenOption.READ), StandardCharsets.UTF_8))) {
-                cMessages.loadFromString(reader.toString());
+            final YamlConfiguration cMessages = new YamlConfiguration();
+            try (BufferedReader reader = Files.newBufferedReader(pathMessages, StandardCharsets.UTF_8)) {
+                cMessages.loadFromString(reader.toString()); // Fails
             } catch (final Exception e) {
                 e.printStackTrace();
             }
@@ -109,19 +106,18 @@ public class Messages {
     }
 
     private void writeConfig(final Path pathMessages, final boolean overwrite) throws IOException {
-        try (BufferedWriter stream = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(pathMessages, overwrite ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE), StandardCharsets.UTF_8))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(pathMessages, StandardCharsets.UTF_8, overwrite ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             final StringBuilder content = new StringBuilder();
             content.append("################################################################################\n");
             content.append("# List of NCuboid messages. You're free to change text/colors/language here.   #\n");
             content.append("# Supports both '§' and '&' characters for colors.                      Ribesg #\n");
             content.append("################################################################################\n\n");
             for (final Message m : getMessagesMap().values()) {
-                getMessagesMap().put(m.getId(), m);
                 content.append("# Default value    : " + m.getDefaultMessage() + '\n');
                 content.append("# Awaited arguments: " + m.getAwaitedArgsString() + '\n');
                 content.append(m.getId().name() + ": \"" + (m.getConfigMessage() != null ? m.getConfigMessage() : m.getDefaultMessage()) + "\"\n\n");
             }
-            stream.write(content.toString());
+            writer.write(content.toString());
         }
     }
 
