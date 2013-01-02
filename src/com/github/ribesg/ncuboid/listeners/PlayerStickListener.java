@@ -16,6 +16,7 @@ import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.beans.CuboidDB;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid.CuboidState;
+import com.github.ribesg.ncuboid.beans.RectCuboid;
 import com.github.ribesg.ncuboid.events.EventExtensionHandler;
 import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
 import com.github.ribesg.ncuboid.lang.Messages;
@@ -36,12 +37,14 @@ public class PlayerStickListener extends AbstractListener {
                 final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
                 if (action == Action.RIGHT_CLICK_BLOCK) {
                     // Selection tool
-                    final PlayerCuboid selection = ext.getCuboid();
+                    final RectCuboid selection = (RectCuboid) CuboidDB.getInstance().getTmp(p.getName());
                     final Location clickedBlockLocation = event.getClickedBlock().getLocation();
                     if (selection == null) {
                         getPlugin().sendMessage(p, MessageId.firstPointSelected, Utils.toString(clickedBlockLocation));
+                        CuboidDB.getInstance().addTmp(new RectCuboid("tmp" + p.getName(), p.getName(), clickedBlockLocation.getWorld(), clickedBlockLocation));
                     } else if (selection.getState() == CuboidState.TMPSTATE1) {
                         getPlugin().sendMessage(p, MessageId.secondPointSelected, Utils.toString(clickedBlockLocation), selection.getSizeString());
+                        selection.secondPoint(clickedBlockLocation);
                     } else if (selection.getState() == CuboidState.TMPSTATE2) {
                         if (selection.contains(clickedBlockLocation)) {
                             getPlugin().sendMessage(p, MessageId.blockInSelection);
@@ -72,9 +75,9 @@ public class PlayerStickListener extends AbstractListener {
                 // Selection reset
                 final PlayerCuboid deletedCuboid = CuboidDB.getInstance().delTmp(p.getName());
                 if (deletedCuboid == null) {
-                    getPlugin().sendMessage(p, MessageId.selectionReset);
-                } else {
                     getPlugin().sendMessage(p, MessageId.noSelection);
+                } else {
+                    getPlugin().sendMessage(p, MessageId.selectionReset);
                 }
             } else {
                 return;

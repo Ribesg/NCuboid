@@ -3,7 +3,7 @@ package com.github.ribesg.ncuboid.lang;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -33,9 +33,10 @@ public class Messages {
 
     }
 
-    public static final String LINE_SEPARATOR = "%%";
-    public static final String MESSAGE_HEADER = "§0§l[§6§lNCuboid§0§l] §f";
-    private static Messages    instance;
+    public static final String  LINE_SEPARATOR = "%%";
+    public static final String  MESSAGE_HEADER = "§0§l[§6§lNCuboid§0§l] §f";
+    public static final Charset CHARSET        = Charset.defaultCharset();
+    private static Messages     instance;
 
     public static Messages getInstance() {
         if (instance == null) {
@@ -56,8 +57,12 @@ public class Messages {
             newConfig(pathMessages);
         } else {
             final YamlConfiguration cMessages = new YamlConfiguration();
-            try (BufferedReader reader = Files.newBufferedReader(pathMessages, StandardCharsets.UTF_8)) {
-                cMessages.loadFromString(reader.toString()); // Fails
+            try (BufferedReader reader = Files.newBufferedReader(pathMessages, CHARSET)) {
+                final StringBuilder s = new StringBuilder();
+                while (reader.ready()) {
+                    s.append(reader.readLine() + '\n');
+                }
+                cMessages.loadFromString(s.toString()); // Fails
             } catch (final Exception e) {
                 e.printStackTrace();
             }
@@ -106,7 +111,7 @@ public class Messages {
     }
 
     private void writeConfig(final Path pathMessages, final boolean overwrite) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(pathMessages, StandardCharsets.UTF_8, overwrite ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(pathMessages, CHARSET, overwrite ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             final StringBuilder content = new StringBuilder();
             content.append("################################################################################\n");
             content.append("# List of NCuboid messages. You're free to change text/colors/language here.   #\n");

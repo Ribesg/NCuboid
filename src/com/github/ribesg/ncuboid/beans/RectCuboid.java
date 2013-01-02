@@ -106,9 +106,9 @@ public class RectCuboid extends PlayerCuboid {
             setMinX(getMinCorner().getBlockX() < secondPoint.getBlockX() ? getMinCorner().getBlockX() : secondPoint.getBlockX());
             setMinY(getMinCorner().getBlockY() < secondPoint.getBlockY() ? getMinCorner().getBlockY() : secondPoint.getBlockY());
             setMinZ(getMinCorner().getBlockZ() < secondPoint.getBlockZ() ? getMinCorner().getBlockZ() : secondPoint.getBlockZ());
-            setMaxX(getMinX() == secondPoint.getBlockX() ? getMaxCorner().getBlockX() : secondPoint.getBlockX());
-            setMaxY(getMinY() == secondPoint.getBlockY() ? getMaxCorner().getBlockY() : secondPoint.getBlockY());
-            setMaxZ(getMinZ() == secondPoint.getBlockZ() ? getMaxCorner().getBlockZ() : secondPoint.getBlockZ());
+            setMaxX(getMinX() == secondPoint.getBlockX() ? getMinCorner().getBlockX() : secondPoint.getBlockX());
+            setMaxY(getMinY() == secondPoint.getBlockY() ? getMinCorner().getBlockY() : secondPoint.getBlockY());
+            setMaxZ(getMinZ() == secondPoint.getBlockZ() ? getMinCorner().getBlockZ() : secondPoint.getBlockZ());
             setMinCorner(new Location(getWorld(), getMinX(), getMinY(), getMinZ()));
             setMaxCorner(new Location(getWorld(), getMaxX(), getMaxY(), getMaxZ()));
             setState(CuboidState.TMPSTATE2);
@@ -124,6 +124,6 @@ public class RectCuboid extends PlayerCuboid {
 
     @Override
     public String getSizeString() {
-        return new StringBuilder().append(maxX - minX + 1).append('x').append(maxY - minY + 1).append('x').append(maxZ - minZ + 1).toString();
+        return new StringBuilder().append(maxX - minX).append('x').append(maxY - minY).append('x').append(maxZ - minZ).toString();
     }
 }

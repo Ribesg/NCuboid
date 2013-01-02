@@ -52,21 +52,8 @@ public abstract class GeneralCuboid extends Cuboid {
     public GeneralCuboid(final World world, final CuboidType type) {
         setWorld(world);
         setType(type);
-        setAllowedPlayers(null);
-        setAllowedGroups(null);
-        setDisallowedPlayers(null);
-        setDisallowedGroups(null);
-        setDisallowedCommands(null);
         setPriority(0);
         flags = Flag.getDefaultFlagMap();
-        setHealQuantity(null);
-        setHealTimer(null);
-        setHealMinimumPlayerHealth(null);
-        setHealMaximumPlayerHealth(null);
-        setFeedQuantity(null);
-        setFeedTimer(null);
-        setFeedMinimumPlayerFood(null);
-        setFeedMaximumPlayerFood(null);
     }
 
     public GeneralCuboid(
