@@ -1,6 +1,5 @@
 package com.github.ribesg.ncuboid.beans;
 
-import java.util.EnumMap;
 import java.util.Set;
 
 import lombok.Getter;
@@ -8,13 +7,14 @@ import lombok.Setter;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.util.Vector;
 
-import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
+import com.github.ribesg.ncore.nodes.cuboid.beans.FlagAttributes;
+import com.github.ribesg.ncore.nodes.cuboid.beans.Flags;
+import com.github.ribesg.ncore.nodes.cuboid.beans.Rights;
 
 public class RectCuboid extends PlayerCuboid {
     @Getter @Setter private Location minCorner, maxCorner;
-    @Getter @Setter private long     minX, maxX, minY, maxY, minZ, maxZ;
+    @Getter @Setter private int      minX, maxX, minY, maxY, minZ, maxZ;
 
     // Create a new Rectangular Cuboid
     public RectCuboid(final String cuboidName, final String ownerName, final World world, final Location minCorner) {
@@ -35,32 +35,12 @@ public class RectCuboid extends PlayerCuboid {
             final String welcomeMessage,
             final String farewellMessage,
             final Set<ChunkKey> chunks,
-            final Set<String> allowedPlayers,
-            final Set<String> allowedGroups,
-            final Set<String> disallowedPlayers,
-            final Set<String> disallowedGroups,
-            final Set<String> disallowedCommands,
+            final Rights rights,
             final int priority,
-            final EnumMap<Flag, Boolean> flags,
-            final Location passPoint,
-            final Location closedPoint,
-            final Vector boosterVecor,
-            final Integer healQuantity,
-            final Integer healTimer,
-            final Integer healMinimumPlayerHealth,
-            final Integer healMaximumPlayerFood,
-            final Integer feedQuantity,
-            final Integer feedTimer,
-            final Integer feedMinimumPlayerFood,
-            final Integer feedMaximumPlayerFood,
+            final Flags flags,
+            final FlagAttributes flagAtts,
             final Location minCorner,
-            final Location maxCorner,
-            final long minX,
-            final long maxX,
-            final long minY,
-            final long maxY,
-            final long minZ,
-            final long maxZ) {
+            final Location maxCorner) {
 
         super(cuboidName,
                 ownerName,
@@ -71,33 +51,19 @@ public class RectCuboid extends PlayerCuboid {
                 farewellMessage,
                 chunks,
                 CuboidType.RECT,
-                allowedPlayers,
-                allowedGroups,
-                disallowedPlayers,
-                disallowedGroups,
-                disallowedCommands,
+                rights,
                 priority,
                 flags,
-                passPoint,
-                closedPoint,
-                boosterVecor,
-                healQuantity,
-                healTimer,
-                healMinimumPlayerHealth,
-                healMaximumPlayerFood,
-                feedQuantity,
-                feedTimer,
-                feedMinimumPlayerFood,
-                feedMaximumPlayerFood);
+                flagAtts);
 
         setMinCorner(minCorner);
         setMaxCorner(maxCorner);
-        setMinX(minX);
-        setMaxX(maxX);
-        setMinY(minY);
-        setMaxY(maxY);
-        setMinZ(minZ);
-        setMaxZ(maxZ);
+        setMinX(minCorner.getBlockX());
+        setMaxX(maxCorner.getBlockX());
+        setMinY(minCorner.getBlockY());
+        setMaxY(maxCorner.getBlockY());
+        setMinZ(minCorner.getBlockZ());
+        setMaxZ(maxCorner.getBlockZ());
     }
 
     // The player select the second corner
@@ -124,6 +90,6 @@ public class RectCuboid extends PlayerCuboid {
 
     @Override
     public String getSizeString() {
-        return new StringBuilder().append(maxX - minX).append('x').append(maxY - minY).append('x').append(maxZ - minZ).toString();
+        return maxX - minX + 1 + "x" + (maxY - minY + 1) + "x" + (maxZ - minZ + 1);
     }
 }

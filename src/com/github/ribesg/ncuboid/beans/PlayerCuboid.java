@@ -1,6 +1,5 @@
 package com.github.ribesg.ncuboid.beans;
 
-import java.util.EnumMap;
 import java.util.Set;
 
 import lombok.Getter;
@@ -8,9 +7,10 @@ import lombok.Setter;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.util.Vector;
 
-import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
+import com.github.ribesg.ncore.nodes.cuboid.beans.FlagAttributes;
+import com.github.ribesg.ncore.nodes.cuboid.beans.Flags;
+import com.github.ribesg.ncore.nodes.cuboid.beans.Rights;
 
 public abstract class PlayerCuboid extends GeneralCuboid {
 
@@ -29,11 +29,6 @@ public abstract class PlayerCuboid extends GeneralCuboid {
     @Getter @Setter private String        farewellMessage;
     @Getter @Setter private Set<ChunkKey> chunks;
 
-    // Flags related
-    @Getter @Setter private Location      passPoint;      // For Pass flag
-    @Getter @Setter private Location      closedPoint;    // For Closed flag
-    @Getter @Setter private Vector        boosterVector;  // For Booster flag
-
     // Create a new Cuboid, when user select points etc
     public PlayerCuboid(final String cuboidName, final String ownerName, final World world, final CuboidType type) {
         super(world, type);
@@ -42,9 +37,6 @@ public abstract class PlayerCuboid extends GeneralCuboid {
         setState(CuboidState.TMPSTATE1);
         setWelcomeMessage(null);
         setFarewellMessage(null);
-        setPassPoint(null);
-        setClosedPoint(null);
-        setBoosterVector(null);
     }
 
     // Create a Cuboid from a save
@@ -58,42 +50,12 @@ public abstract class PlayerCuboid extends GeneralCuboid {
             final String farewellMessage,
             final Set<ChunkKey> chunks,
             final CuboidType type,
-            final Set<String> allowedPlayers,
-            final Set<String> allowedGroups,
-            final Set<String> disallowedPlayers,
-            final Set<String> disallowedGroups,
-            final Set<String> disallowedCommands,
+            final Rights rights,
             final int priority,
-            final EnumMap<Flag, Boolean> flags,
-            final Location passPoint,
-            final Location closedPoint,
-            final Vector boosterVecor,
-            final Integer healQuantity,
-            final Integer healTimer,
-            final Integer healMinimumPlayerHealth,
-            final Integer healMaximumPlayerHealth,
-            final Integer feedQuantity,
-            final Integer feedTimer,
-            final Integer feedMinimumPlayerFood,
-            final Integer feedMaximumPlayerFood) {
+            final Flags flags,
+            final FlagAttributes flagAtts) {
 
-        super(world,
-                type,
-                allowedPlayers,
-                allowedGroups,
-                disallowedPlayers,
-                disallowedGroups,
-                disallowedCommands,
-                priority,
-                flags,
-                healQuantity,
-                healTimer,
-                healMinimumPlayerHealth,
-                healMaximumPlayerHealth,
-                feedQuantity,
-                feedTimer,
-                feedMinimumPlayerFood,
-                feedMaximumPlayerFood);
+        super(world, type, rights, priority, flags, flagAtts);
         setCuboidName(cuboidName);
         setOwnerName(ownerName);
         setState(state);
@@ -101,9 +63,6 @@ public abstract class PlayerCuboid extends GeneralCuboid {
         setWelcomeMessage(welcomeMessage);
         setFarewellMessage(farewellMessage);
         setChunks(chunks);
-        setPassPoint(passPoint);
-        setClosedPoint(closedPoint);
-        setBoosterVector(boosterVecor);
     }
 
     // Location check
@@ -114,6 +73,7 @@ public abstract class PlayerCuboid extends GeneralCuboid {
 
     public abstract boolean contains(final double x, final double y, final double z);
 
+    // Info
     public String getInfoLine() {
         return "- " + getCuboidName() + " (" + getOwnerName() + ") " + getSizeString();
     }

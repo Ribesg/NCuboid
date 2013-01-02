@@ -5,6 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
+import com.github.ribesg.ncore.nodes.cuboid.beans.FlagAtt;
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.events.EventExtensionHandler;
 import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
@@ -20,8 +21,8 @@ public class BoosterFlagListener extends AbstractListener {
     public void onPlayerMoveBlock(final PlayerMoveEvent event) {
         if (EventExtensionHandler.containsEvent(event)) {
             final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
-            if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.BOOSTER)) {
-                event.getPlayer().setVelocity(ext.getToCuboid().getBoosterVector());
+            if (ext.getToCuboid() != null && ext.getToCuboid().getFlags().get(Flag.BOOSTER)) {
+                event.getPlayer().setVelocity(ext.getToCuboid().getFlagAtts().getVect(FlagAtt.BOOSTER_VECTOR));
             }
         }
     }

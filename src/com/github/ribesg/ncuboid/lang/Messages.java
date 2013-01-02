@@ -34,7 +34,7 @@ public class Messages {
     }
 
     public static final String  LINE_SEPARATOR = "%%";
-    public static final String  MESSAGE_HEADER = "§0§l[§6§lNCuboid§0§l] §f";
+    public static final String  MESSAGE_HEADER = "§0§l[§c§lN§6§lCuboid§0§l] §f";
     public static final Charset CHARSET        = Charset.defaultCharset();
     private static Messages     instance;
 
@@ -85,15 +85,15 @@ public class Messages {
         final Set<Message> newMessages = new HashSet<Message>();
 
         // PlayerStickListener
-        newMessages.add(new Message(MessageId.firstPointSelected, "First point selected : %coords%", new String[] { "%coords%" }, null));
-        newMessages.add(new Message(MessageId.secondPointSelected, "Second point selected : %coords%, Size : %size%", new String[] { "%coords%", "%size%" }, null));
-        newMessages.add(new Message(MessageId.blockInSelection, "This block is in your selection", null, null));
-        newMessages.add(new Message(MessageId.blockNotInSelection, "This block is not in your selection", null, null));
-        newMessages.add(new Message(MessageId.blockNotProtected, "This block is not protected", null, null));
-        newMessages.add(new Message(MessageId.blockProtectedOneCuboid, "This block is protected by one cuboid:" + LINE_SEPARATOR + "%cuboidInfo%", new String[] { "%cuboidInfo%" }, null));
-        newMessages.add(new Message(MessageId.blockProtectedMultipleCuboids, "This block is protected by %nb% cuboids:" + LINE_SEPARATOR + "%cuboidsInfos%", new String[] { "%cuboidsInfos%" }, null));
-        newMessages.add(new Message(MessageId.selectionReset, "Your selection has been reset", null, null));
-        newMessages.add(new Message(MessageId.noSelection, "You have no selection to reset", null, null));
+        newMessages.add(new Message(MessageId.firstPointSelected, "&aFirst point selected : %coords%", new String[] { "%coords%" }, null));
+        newMessages.add(new Message(MessageId.secondPointSelected, "&aSecond point selected : %coords%%%&aSelection Size : %size%", new String[] { "%coords%", "%size%" }, null));
+        newMessages.add(new Message(MessageId.blockInSelection, "&aThis block is in your selection", null, null));
+        newMessages.add(new Message(MessageId.blockNotInSelection, "&cThis block is not in your selection", null, null));
+        newMessages.add(new Message(MessageId.blockNotProtected, "&aThis block is not protected", null, null));
+        newMessages.add(new Message(MessageId.blockProtectedOneCuboid, "&cThis block is protected by one cuboid:" + LINE_SEPARATOR + "%cuboidInfo%", new String[] { "%cuboidInfo%" }, null));
+        newMessages.add(new Message(MessageId.blockProtectedMultipleCuboids, "&cThis block is protected by %nb% cuboids:" + LINE_SEPARATOR + "%cuboidsInfos%", new String[] { "%cuboidsInfos%" }, null));
+        newMessages.add(new Message(MessageId.selectionReset, "&aYour selection has been reset", null, null));
+        newMessages.add(new Message(MessageId.noSelection, "&cYou have no selection to reset", null, null));
 
         final EnumMap<MessageId, Message> map = new EnumMap<MessageId, Message>(MessageId.class);
         for (final Message m : newMessages) {

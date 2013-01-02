@@ -40,11 +40,11 @@ public class PlayerStickListener extends AbstractListener {
                     final RectCuboid selection = (RectCuboid) CuboidDB.getInstance().getTmp(p.getName());
                     final Location clickedBlockLocation = event.getClickedBlock().getLocation();
                     if (selection == null) {
-                        getPlugin().sendMessage(p, MessageId.firstPointSelected, Utils.toString(clickedBlockLocation));
                         CuboidDB.getInstance().addTmp(new RectCuboid("tmp" + p.getName(), p.getName(), clickedBlockLocation.getWorld(), clickedBlockLocation));
+                        getPlugin().sendMessage(p, MessageId.firstPointSelected, Utils.toString(clickedBlockLocation));
                     } else if (selection.getState() == CuboidState.TMPSTATE1) {
-                        getPlugin().sendMessage(p, MessageId.secondPointSelected, Utils.toString(clickedBlockLocation), selection.getSizeString());
                         selection.secondPoint(clickedBlockLocation);
+                        getPlugin().sendMessage(p, MessageId.secondPointSelected, Utils.toString(clickedBlockLocation), selection.getSizeString());
                     } else if (selection.getState() == CuboidState.TMPSTATE2) {
                         if (selection.contains(clickedBlockLocation)) {
                             getPlugin().sendMessage(p, MessageId.blockInSelection);
