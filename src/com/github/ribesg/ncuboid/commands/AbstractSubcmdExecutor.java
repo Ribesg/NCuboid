@@ -21,5 +21,4 @@ public abstract class AbstractSubcmdExecutor {
     }
 
     public abstract boolean exec();
-
 }
