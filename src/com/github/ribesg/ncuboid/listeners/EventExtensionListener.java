@@ -3,11 +3,13 @@ package com.github.ribesg.ncuboid.listeners;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.events.EventExtensionHandler;
+import com.github.ribesg.ncuboid.events.extensions.HangingBreakEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
 
@@ -42,6 +44,17 @@ public class EventExtensionListener extends AbstractListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteractLast(final PlayerInteractEvent event) {
+        EventExtensionHandler.remove(event);
+    }
+
+    // HangingBreakEvent
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onHangingBreakFirst(final HangingBreakEvent event) {
+        EventExtensionHandler.add(new HangingBreakEventExtension(event));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onHangingBreakLast(final HangingBreakEvent event) {
         EventExtensionHandler.remove(event);
     }
 }

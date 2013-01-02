@@ -20,6 +20,9 @@ public class Messages {
 
     public enum MessageId {
 
+        // General deny response
+        actionCancelledByCuboid,
+
         // PlayerStickListener
         blockInSelection,
         blockNotInSelection,
@@ -83,6 +86,9 @@ public class Messages {
     // Precond : fMessages does not exist
     public EnumMap<MessageId, Message> getDefaultConfig() {
         final Set<Message> newMessages = new HashSet<Message>();
+
+        // General deny response
+        newMessages.add(new Message(MessageId.actionCancelledByCuboid, "&cAction cancelled by the cuboid %cuboid%", new String[] { "%cuboid%" }, null));
 
         // PlayerStickListener
         newMessages.add(new Message(MessageId.firstPointSelected, "&aFirst point selected : %coords%", new String[] { "%coords%" }, null));
