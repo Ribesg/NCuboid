@@ -21,7 +21,7 @@ public class ExplosionFlagListener extends AbstractListener {
     public void onEntityExplode(final EntityExplodeEvent event) {
         final EntityExplodeEventExtension ext = (EntityExplodeEventExtension) EventExtensionHandler.get(event);
         for (final Block b : ext.getBlockCuboidsMap().keySet()) {
-            if (ext.getBlockCuboidsMap().get(b).getFlags().get(Flag.EXPLOSION)) {
+            if (ext.getBlockCuboidsMap().get(b).getFlag(Flag.EXPLOSION)) {
                 event.blockList().remove(b);
             }
         }

@@ -27,7 +27,7 @@ public class ChestFlagListener extends AbstractListener {
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.hasBlock()) {
             final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
-            if (ext.getCuboid() != null && ext.getCuboid().getFlags().get(Flag.CHEST) && !ext.getCuboid().getRights().isAllowedPlayer(event.getPlayer())) {
+            if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CHEST) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())) {
                 switch (event.getClickedBlock().getType()) {
                     case CHEST:
                     case DISPENSER:
@@ -47,7 +47,7 @@ public class ChestFlagListener extends AbstractListener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerInteractEntity(final PlayerInteractEntityEvent event) {
         final PlayerInteractEntityEventExtension ext = (PlayerInteractEntityEventExtension) EventExtensionHandler.get(event);
-        if (ext.getCuboid() != null && ext.getCuboid().getFlags().get(Flag.CHEST) && !ext.getCuboid().getRights().isAllowedPlayer(event.getPlayer())) {
+        if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CHEST) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())) {
             switch (event.getRightClicked().getType()) {
                 case ITEM_FRAME:
                     event.setCancelled(true);
@@ -65,7 +65,7 @@ public class ChestFlagListener extends AbstractListener {
     public void onEntityExplode(final EntityExplodeEvent event) {
         final EntityExplodeEventExtension ext = (EntityExplodeEventExtension) EventExtensionHandler.get(event);
         for (final Block b : ext.getBlockCuboidsMap().keySet()) {
-            if (ext.getBlockCuboidsMap().get(b).getFlags().get(Flag.CHEST)) {
+            if (ext.getBlockCuboidsMap().get(b).getFlag(Flag.CHEST)) {
                 switch (b.getType()) {
                     case CHEST:
                     case DISPENSER:

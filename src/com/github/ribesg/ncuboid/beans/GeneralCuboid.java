@@ -1,5 +1,6 @@
 package com.github.ribesg.ncuboid.beans;
 
+import lombok.Delegate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,16 +20,16 @@ public abstract class GeneralCuboid extends Cuboid {
     }
 
     // Identification / informations related
-    @Getter @Setter private World        world;
-    @Getter @Setter private CuboidType   type;
+    @Getter @Setter private World          world;
+    @Getter @Setter private CuboidType     type;
 
     // Protection related
-    @Getter private final Rights         rights;
-    @Getter @Setter private int          priority;
+    @Delegate private final Rights         rights;
+    @Getter @Setter private int            priority;
 
     // Flags related
-    @Getter private final Flags          flags;
-    @Getter private final FlagAttributes flagAtts;
+    @Delegate private final Flags          flags;
+    @Delegate private final FlagAttributes flagAtts;
 
     // Create a new Cuboid, when user select points etc
     public GeneralCuboid(final World world, final CuboidType type) {

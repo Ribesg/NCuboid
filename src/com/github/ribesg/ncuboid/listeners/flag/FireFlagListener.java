@@ -21,7 +21,7 @@ public class FireFlagListener extends AbstractListener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockBurn(final BlockBurnEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
-        if (cuboid != null && cuboid.getFlags().get(Flag.FIRE)) {
+        if (cuboid != null && cuboid.getFlag(Flag.FIRE)) {
             event.setCancelled(true);
         }
     }
@@ -30,7 +30,7 @@ public class FireFlagListener extends AbstractListener {
     public void onBlockSpread(final BlockSpreadEvent event) {
         if (event.getBlock().getType() == Material.FIRE) {
             final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
-            if (cuboid != null && cuboid.getFlags().get(Flag.FIRE)) {
+            if (cuboid != null && cuboid.getFlag(Flag.FIRE)) {
                 event.setCancelled(true);
             }
         }

@@ -60,7 +60,7 @@ public class FarmFlagListener extends AbstractListener {
             return;
         }
         final EntityDamageEventExtension ext = (EntityDamageEventExtension) EventExtensionHandler.get(event);
-        if (getAnimals().contains(event.getEntityType()) && ext.getEntityCuboid() != null && ext.getEntityCuboid().getFlags().get(Flag.FARM) && !ext.getEntityCuboid().getRights().isAllowedPlayer(p)) {
+        if (getAnimals().contains(event.getEntityType()) && ext.getEntityCuboid() != null && ext.getEntityCuboid().getFlag(Flag.FARM) && !ext.getEntityCuboid().isAllowedPlayer(p)) {
             event.setCancelled(true);
         }
     }
@@ -69,7 +69,7 @@ public class FarmFlagListener extends AbstractListener {
     public void onPlayerInteractEvent(final PlayerInteractEvent event) {
         if (event.getAction() == Action.PHYSICAL) {
             final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
-            if (ext.getCuboid() != null && ext.getCuboid().getFlags().get(Flag.FARM) && !ext.getCuboid().getRights().isAllowedPlayer(event.getPlayer())) {
+            if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.FARM) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())) {
                 event.setCancelled(true);
             }
         }
@@ -78,7 +78,7 @@ public class FarmFlagListener extends AbstractListener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerShearEntity(final PlayerShearEntityEvent event) {
         final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getEntity().getLocation());
-        if (cuboid != null && cuboid.getFlags().get(Flag.FARM) && !cuboid.getRights().isAllowedPlayer(event.getPlayer())) {
+        if (cuboid != null && cuboid.getFlag(Flag.FARM) && !cuboid.isAllowedPlayer(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

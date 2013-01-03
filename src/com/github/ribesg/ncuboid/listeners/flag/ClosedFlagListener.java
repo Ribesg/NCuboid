@@ -22,7 +22,7 @@ public class ClosedFlagListener extends AbstractListener {
         if (EventExtensionHandler.containsEvent(event)) {
             final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
             if (!ext.isCustomCancelled()) {
-                if (ext.getFromCuboid() != null && ext.getFromCuboid().getFlags().get(Flag.CLOSED) && !ext.getFromCuboid().equals(ext.getToCuboid())) {
+                if (ext.getFromCuboid() != null && ext.getFromCuboid().getFlag(Flag.CLOSED) && !ext.getFromCuboid().equals(ext.getToCuboid())) {
                     event.setTo(new Location(event.getFrom().getWorld(), event.getFrom().getBlockX() + 0.5, event.getFrom().getBlockY() + 0.25, event.getFrom().getBlockZ() + 0.5, event.getTo().getYaw(), event.getTo().getPitch()));
                     ext.setCustomCancelled(true);
                 }

@@ -38,7 +38,7 @@ public class CreativeFlagListener extends AbstractListener {
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.hasBlock()) {
             final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
-            if (ext.getCuboid() != null && ext.getCuboid().getFlags().get(Flag.CREATIVE)) {
+            if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CREATIVE)) {
                 switch (event.getClickedBlock().getType()) {
                     case CHEST:
                     case DISPENSER:
@@ -58,7 +58,7 @@ public class CreativeFlagListener extends AbstractListener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerInteractEntity(final PlayerInteractEntityEvent event) {
         final PlayerInteractEntityEventExtension ext = (PlayerInteractEntityEventExtension) EventExtensionHandler.get(event);
-        if (ext.getCuboid() != null && ext.getCuboid().getFlags().get(Flag.CHEST)) {
+        if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CHEST)) {
             switch (event.getRightClicked().getType()) {
                 case ITEM_FRAME:
                     event.setCancelled(true);
@@ -75,7 +75,7 @@ public class CreativeFlagListener extends AbstractListener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerDropItem(final PlayerDropItemEvent event) {
         final PlayerDropItemEventExtension ext = (PlayerDropItemEventExtension) EventExtensionHandler.get(event);
-        if (ext.getPlayerCuboid() != null && ext.getPlayerCuboid().getFlags().get(Flag.CREATIVE)) {
+        if (ext.getPlayerCuboid() != null && ext.getPlayerCuboid().getFlag(Flag.CREATIVE)) {
             event.setCancelled(true);
         }
     }
