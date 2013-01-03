@@ -8,11 +8,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.events.EventExtensionHandler;
+import com.github.ribesg.ncuboid.events.extensions.PlayerJoinEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
@@ -47,6 +50,21 @@ public class GodFlagListener extends AbstractListener {
             if (godPlayers.contains(event.getEntity())) {
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        final PlayerJoinEventExtension ext = (PlayerJoinEventExtension) EventExtensionHandler.get(event);
+        if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.INVISIBLE)) {
+            godPlayers.add(event.getPlayer());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerQuit(final PlayerQuitEvent event) {
+        if (godPlayers.contains(event.getPlayer())) {
+            godPlayers.remove(event.getPlayer());
         }
     }
 }

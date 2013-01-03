@@ -4,6 +4,8 @@ import java.util.Set;
 
 import lombok.Getter;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -18,14 +20,25 @@ public class EntityDamageEventExtension extends EventExtension {
     @Getter private final PlayerCuboid      entityCuboid;
     @Getter private PlayerCuboid            damagerCuboid;
 
+    private boolean                         isDamagerProjectile = false;
+
     public EntityDamageEventExtension(final EntityDamageEvent event) {
         super(event);
         entityCuboids = CuboidDB.getInstance().getAllByLoc(event.getEntity().getLocation());
         entityCuboid = CuboidDB.getInstance().getPrior(entityCuboids);
         if (event instanceof EntityDamageByEntityEvent) {
-            damagerCuboids = CuboidDB.getInstance().getAllByLoc(((EntityDamageByEntityEvent) event).getDamager().getLocation());
+            Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
+            if (damager instanceof Projectile) {
+                damager = ((Projectile) damager).getShooter();
+                isDamagerProjectile = true;
+            }
+            damagerCuboids = CuboidDB.getInstance().getAllByLoc(damager.getLocation());
             damagerCuboid = CuboidDB.getInstance().getPrior(damagerCuboids);
         }
+    }
+
+    public boolean isDamagerProjectile() {
+        return isDamagerProjectile;
     }
 
 }

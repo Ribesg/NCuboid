@@ -9,7 +9,9 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.events.EventExtensionHandler;
@@ -19,7 +21,9 @@ import com.github.ribesg.ncuboid.events.extensions.HangingBreakEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerDropItemEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEntityEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.PlayerJoinEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.PlayerTeleportEventExtension;
 
 public class EventExtensionListener extends AbstractListener {
 
@@ -39,6 +43,21 @@ public class EventExtensionListener extends AbstractListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerMoveFinally(final PlayerMoveEvent event) {
+        EventExtensionHandler.remove(event);
+    }
+
+    // PlayerTeleportEvent
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerTeleportFirst(final PlayerTeleportEvent event) {
+        final Location from = event.getFrom(), to = event.getTo();
+        if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ() || !from.getWorld().getName().equals(to.getWorld().getName())) {
+            final PlayerTeleportEventExtension ext = new PlayerTeleportEventExtension(event);
+            EventExtensionHandler.add(ext);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerTeleportFinally(final PlayerTeleportEvent event) {
         EventExtensionHandler.remove(event);
     }
 
@@ -107,6 +126,17 @@ public class EventExtensionListener extends AbstractListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDamageLast(final EntityDamageEvent event) {
+        EventExtensionHandler.remove(event);
+    }
+
+    // PlayerJoinEvent
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerJoinFirst(final PlayerJoinEvent event) {
+        EventExtensionHandler.add(new PlayerJoinEventExtension(event));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerJoinLast(final PlayerJoinEvent event) {
         EventExtensionHandler.remove(event);
     }
 }

@@ -14,7 +14,7 @@ import com.github.ribesg.ncuboid.events.EventExtension;
 
 public class EntityExplodeEventExtension extends EventExtension {
 
-    @Getter Map<Block, PlayerCuboid> blockCuboidsMap;
+    @Getter private final Map<Block, PlayerCuboid> blockCuboidsMap;
 
     public EntityExplodeEventExtension(final EntityExplodeEvent event) {
         super(event);
