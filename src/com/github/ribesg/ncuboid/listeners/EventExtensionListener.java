@@ -3,6 +3,7 @@ package com.github.ribesg.ncuboid.listeners;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.events.EventExtensionHandler;
+import com.github.ribesg.ncuboid.events.extensions.EntityDamageEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.EntityExplodeEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.HangingBreakEventExtension;
 import com.github.ribesg.ncuboid.events.extensions.PlayerDropItemEventExtension;
@@ -25,7 +27,7 @@ public class EventExtensionListener extends AbstractListener {
         super(instance);
     }
 
-    // PlayerMoveBlockEvent
+    // PlayerMoveEvent
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerMoveFirst(final PlayerMoveEvent event) {
         final Location from = event.getFrom(), to = event.getTo();
@@ -94,6 +96,17 @@ public class EventExtensionListener extends AbstractListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDropItemLast(final PlayerDropItemEvent event) {
+        EventExtensionHandler.remove(event);
+    }
+
+    // EntityDamageEvent
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onEntityDamageFirst(final EntityDamageEvent event) {
+        EventExtensionHandler.add(new EntityDamageEventExtension(event));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onEntityDamageLast(final EntityDamageEvent event) {
         EventExtensionHandler.remove(event);
     }
 }

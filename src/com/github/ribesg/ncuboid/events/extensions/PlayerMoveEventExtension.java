@@ -1,5 +1,7 @@
 package com.github.ribesg.ncuboid.events.extensions;
 
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,14 +15,18 @@ import com.github.ribesg.ncuboid.events.EventExtension;
 //It also contains TO and FROM cuboids.
 public class PlayerMoveEventExtension extends EventExtension {
 
-    @Getter private final PlayerCuboid fromCuboid;
-    @Getter private final PlayerCuboid toCuboid;
-    @Setter private boolean            customCancelled;
+    @Getter private final PlayerCuboid      fromCuboid;
+    @Getter private final Set<PlayerCuboid> fromCuboids;
+    @Getter private final PlayerCuboid      toCuboid;
+    @Getter private final Set<PlayerCuboid> toCuboids;
+    @Setter private boolean                 customCancelled;
 
     public PlayerMoveEventExtension(final PlayerMoveEvent event) {
         super(event);
-        fromCuboid = CuboidDB.getInstance().getPriorByLoc(event.getFrom());
-        toCuboid = CuboidDB.getInstance().getPriorByLoc(event.getTo());
+        fromCuboids = CuboidDB.getInstance().getAllByLoc(event.getFrom());
+        fromCuboid = CuboidDB.getInstance().getPrior(fromCuboids);
+        toCuboids = CuboidDB.getInstance().getAllByLoc(event.getTo());
+        toCuboid = CuboidDB.getInstance().getPrior(toCuboids);
         customCancelled = false;
     }
 

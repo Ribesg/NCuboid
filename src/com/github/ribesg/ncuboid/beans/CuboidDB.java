@@ -133,7 +133,7 @@ public class CuboidDB extends com.github.ribesg.ncore.nodes.cuboid.beans.CuboidD
         return getPrior(getAllByLoc(loc));
     }
 
-    public static PlayerCuboid getPrior(final Set<PlayerCuboid> cuboids) {
+    public PlayerCuboid getPrior(final Set<PlayerCuboid> cuboids) {
         if (cuboids == null) {
             return null;
         } else {

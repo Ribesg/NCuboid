@@ -18,7 +18,7 @@ public class HangingBreakEventExtension extends EventExtension {
     public HangingBreakEventExtension(final HangingBreakEvent event) {
         super(event);
         cuboids = CuboidDB.getInstance().getAllByLoc(event.getEntity().getLocation());
-        cuboid = CuboidDB.getPrior(cuboids);
+        cuboid = CuboidDB.getInstance().getPrior(cuboids);
     }
 
 }

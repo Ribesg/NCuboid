@@ -18,7 +18,7 @@ public class PlayerInteractEntityEventExtension extends EventExtension {
     public PlayerInteractEntityEventExtension(final PlayerInteractEntityEvent event) {
         super(event);
         cuboids = CuboidDB.getInstance().getAllByLoc(event.getRightClicked().getLocation());
-        cuboid = CuboidDB.getPrior(cuboids);
+        cuboid = CuboidDB.getInstance().getPrior(cuboids);
     }
 
 }
