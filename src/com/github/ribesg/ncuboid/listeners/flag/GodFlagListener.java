@@ -34,10 +34,10 @@ public class GodFlagListener extends AbstractListener {
             final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
             if (!ext.isCustomCancelled()) {
                 if (godPlayers.contains(event.getPlayer())) {
-                    if (!ext.getToCuboid().getFlag(Flag.GOD)) {
+                    if (ext.getToCuboid() == null || ext.getToCuboid() != null && !ext.getToCuboid().getFlag(Flag.GOD)) {
                         godPlayers.remove(event.getPlayer());
                     }
-                } else if (ext.getToCuboid().getFlag(Flag.GOD)) {
+                } else if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.GOD)) {
                     godPlayers.add(event.getPlayer());
                 }
             }

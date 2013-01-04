@@ -34,11 +34,11 @@ public class InvisibleFlagListener extends AbstractListener {
             final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
             if (!ext.isCustomCancelled()) {
                 if (invisiblePlayers.contains(event.getPlayer())) {
-                    if (!ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
+                    if (ext.getToCuboid() == null || ext.getToCuboid() != null && !ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
                         showToAll(event.getPlayer());
                         invisiblePlayers.remove(event.getPlayer());
                     }
-                } else if (ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
+                } else if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
                     hideToAll(event.getPlayer());
                     invisiblePlayers.add(event.getPlayer());
                 }
