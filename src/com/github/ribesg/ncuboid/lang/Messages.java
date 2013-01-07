@@ -22,6 +22,7 @@ public class Messages {
 
         // General deny response
         actionCancelledByCuboid,
+        noPermissionForCommand,
 
         // PlayerStickListener
         blockInSelection,
@@ -32,7 +33,10 @@ public class Messages {
         firstPointSelected,
         noSelection,
         secondPointSelected,
-        selectionReset
+        selectionReset,
+
+        // Command - RELOAD
+        cmdReloadMessages,
 
     }
 
@@ -89,6 +93,7 @@ public class Messages {
 
         // General deny response
         newMessages.add(new Message(MessageId.actionCancelledByCuboid, "&cAction cancelled by the cuboid %cuboid%", new String[] { "%cuboid%" }, null));
+        newMessages.add(new Message(MessageId.noPermissionForCommand, "&cYou do not have the permission to use that command", null, null));
 
         // PlayerStickListener
         newMessages.add(new Message(MessageId.firstPointSelected, "&aFirst point selected : %coords%", new String[] { "%coords%" }, null));
@@ -100,6 +105,9 @@ public class Messages {
         newMessages.add(new Message(MessageId.blockProtectedMultipleCuboids, "&cThis block is protected by %nb% cuboids:" + LINE_SEPARATOR + "%cuboidsInfos%", new String[] { "%cuboidsInfos%" }, null));
         newMessages.add(new Message(MessageId.selectionReset, "&aYour selection has been reset", null, null));
         newMessages.add(new Message(MessageId.noSelection, "&cYou have no selection to reset", null, null));
+
+        // Command - RELOAD
+        newMessages.add(new Message(MessageId.cmdReloadMessages, "&aMessages reloaded !", null, null));
 
         final EnumMap<MessageId, Message> map = new EnumMap<MessageId, Message>(MessageId.class);
         for (final Message m : newMessages) {

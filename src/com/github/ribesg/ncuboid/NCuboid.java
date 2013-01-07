@@ -13,6 +13,7 @@ import org.bukkit.plugin.PluginManager;
 import com.github.ribesg.ncore.NCore;
 import com.github.ribesg.ncore.nodes.cuboid.CuboidNode;
 import com.github.ribesg.ncuboid.beans.CuboidDB;
+import com.github.ribesg.ncuboid.commands.MainCommandExecutor;
 import com.github.ribesg.ncuboid.lang.Messages;
 import com.github.ribesg.ncuboid.lang.Messages.MessageId;
 import com.github.ribesg.ncuboid.listeners.EventExtensionListener;
@@ -48,7 +49,7 @@ public class NCuboid extends CuboidNode {
     // // None
 
     // Files
-    Path                       pathMessages;
+    @Getter Path               pathMessages;
 
     // Set to true by afterEnable() call
     // Prevent multiple calls to afterEnable
@@ -100,6 +101,9 @@ public class NCuboid extends CuboidNode {
         pm.registerEvents(new TeleportFlagListener(this), this);
         pm.registerEvents(new UseFlagListener(this), this);
         pm.registerEvents(new WarpgateFlagListener(this), this);
+
+        // Command
+        getCommand("cuboid").setExecutor(new MainCommandExecutor(this));
 
         afterEnable();
     }

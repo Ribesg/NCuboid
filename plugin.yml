@@ -5,3 +5,11 @@ author: Ribesg
 website: http://itsn3w.fr/
 main: com.github.ribesg.ncuboid.NCuboid
 load: STARTUP
+
+commands:
+    cuboid:
+        description: General cuboid command
+        aliases: [c,cubo]
+        permission: ncuboid.cmd.general
+        usage: |
+            §c/<command> help
