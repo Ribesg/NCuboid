@@ -44,6 +44,7 @@ public class NCuboid extends CuboidNode {
     public static final String NCORE           = "NCore";
     public static final String F_MESSAGES      = "messages.yml";
     public static final String F_CONFIG        = "config.yml";
+    public static final String F_CUBOIDS       = "cuboidDB.yml";
 
     // Core plugin
     @Getter public NCore       core;

@@ -39,6 +39,8 @@ public class Messages {
         selectionReset,
 
         // Command - RELOAD
+        cmdReloadConfig,
+        cmdReloadCuboids,
         cmdReloadMessages,
 
     }
@@ -100,6 +102,8 @@ public class Messages {
         newMessages.add(new Message(MessageId.noSelection, "&cYou have no selection to reset", null, null));
 
         // Command - RELOAD
+        newMessages.add(new Message(MessageId.cmdReloadCuboids, "&aCuboids reloaded !", null, null));
+        newMessages.add(new Message(MessageId.cmdReloadConfig, "&aConfig reloaded !", null, null));
         newMessages.add(new Message(MessageId.cmdReloadMessages, "&aMessages reloaded !", null, null));
 
         final EnumMap<MessageId, Message> map = new EnumMap<MessageId, Message>(MessageId.class);

@@ -22,17 +22,31 @@ public class ReloadSubcmdExecutor extends AbstractSubcmdExecutor {
             return false;
         } else if (getSender().isOp() || getSender().hasPermission(Permissions.CMD_RELOAD)) {
             switch (getArgs()[0]) {
+                case "cuboids":
+                case "cuboid":
+                case "cubo":
+                    try {
+                        Messages.loadConfig(getPlugin().getPathMessages());
+                        getPlugin().sendMessage(getSender(), MessageId.cmdReloadCuboids);
+                        return true;
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                        getPlugin().sendMessage(getSender(), MessageId.errorWhileLoadingConfiguration, NCuboid.F_CUBOIDS);
+                        return true;
+                    }
                 case "config":
                 case "conf":
                     try {
                         Messages.loadConfig(getPlugin().getPathMessages());
-                        getPlugin().sendMessage(getSender(), MessageId.cmdReloadMessages);
+                        getPlugin().sendMessage(getSender(), MessageId.cmdReloadConfig);
                         return true;
                     } catch (final IOException e) {
                         e.printStackTrace();
+                        getPlugin().sendMessage(getSender(), MessageId.errorWhileLoadingConfiguration, NCuboid.F_CONFIG);
                         return true;
                     }
                 case "messages":
+                case "mess":
                 case "mes":
                     try {
                         Messages.loadConfig(getPlugin().getPathMessages());
@@ -40,6 +54,7 @@ public class ReloadSubcmdExecutor extends AbstractSubcmdExecutor {
                         return true;
                     } catch (final IOException e) {
                         e.printStackTrace();
+                        getPlugin().sendMessage(getSender(), MessageId.errorWhileLoadingConfiguration, NCuboid.F_MESSAGES);
                         return true;
                     }
                 default:
