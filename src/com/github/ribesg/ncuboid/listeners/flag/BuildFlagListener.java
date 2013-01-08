@@ -74,8 +74,9 @@ public class BuildFlagListener extends AbstractListener {
                         event.setCancelled(true);
                         return;
                     }
-                    // Disc
-                } else if (event.getClickedBlock().getType() == Material.JUKEBOX && event.getItem().getTypeId() >= 2256 && event.getItem().getTypeId() <= 2267) {
+                }
+                // Disc
+                else if (event.getClickedBlock().getType() == Material.JUKEBOX && event.getItem().getTypeId() >= 2256 && event.getItem().getTypeId() <= 2267) {
                     if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.BUILD) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())) {
                         getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, ext.getCuboid().getCuboidName());
                         event.setCancelled(true);
