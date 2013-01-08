@@ -40,16 +40,20 @@ import com.github.ribesg.ncuboid.listeners.flag.UseFlagListener;
 import com.github.ribesg.ncuboid.listeners.flag.WarpgateFlagListener;
 
 public class NCuboid extends CuboidNode {
+    // Constants
+    public static final String NCORE           = "NCore";
+    public static final String F_MESSAGES      = "messages.yml";
+    public static final String F_CONFIG        = "config.yml";
 
     // Core plugin
-    public static final String NCORE           = "NCore";
     @Getter public NCore       core;
 
     // Useful Nodes
     // // None
 
     // Files
-    @Getter Path               pathMessages;
+    @Getter private Path       pathConfig;
+    @Getter private Path       pathMessages;
 
     // Set to true by afterEnable() call
     // Prevent multiple calls to afterEnable
@@ -62,11 +66,21 @@ public class NCuboid extends CuboidNode {
             if (!getDataFolder().isDirectory()) {
                 getDataFolder().mkdir();
             }
-            pathMessages = Paths.get(getDataFolder().getPath(), "messages.yml");
-            Messages.getInstance().loadConfig(pathMessages);
+            pathMessages = Paths.get(getDataFolder().getPath(), F_MESSAGES);
+            Messages.loadConfig(pathMessages);
         } catch (final IOException e) {
             e.printStackTrace();
-            // TODO Error msg
+            sendMessage(getServer().getConsoleSender(), MessageId.errorWhileLoadingConfiguration, F_MESSAGES);
+            getServer().getPluginManager().disablePlugin(this);
+        }
+
+        // Config
+        try {
+            pathConfig = Paths.get(getDataFolder().getPath(), F_CONFIG);
+            Messages.loadConfig(pathConfig);
+        } catch (final IOException e) {
+            e.printStackTrace();
+            sendMessage(getServer().getConsoleSender(), MessageId.errorWhileLoadingConfiguration, F_CONFIG);
             getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -132,7 +146,7 @@ public class NCuboid extends CuboidNode {
     }
 
     public void sendMessage(final CommandSender to, final MessageId messageId, final String... args) {
-        final String[] m = Messages.getInstance().get(messageId, args);
+        final String[] m = Messages.get(messageId, args);
         to.sendMessage(m);
     }
 }

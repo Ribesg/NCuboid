@@ -20,6 +20,9 @@ public class Messages {
 
     public enum MessageId {
 
+        // General plugin messages
+        errorWhileLoadingConfiguration,
+
         // General deny response
         actionCancelledByCuboid,
         noPermissionForCommand,
@@ -40,25 +43,13 @@ public class Messages {
 
     }
 
-    public static final String  LINE_SEPARATOR = "%%";
-    public static final String  MESSAGE_HEADER = "§0§l[§c§lN§6§lCuboid§0§l] §f";
-    public static final Charset CHARSET        = Charset.defaultCharset();
-    private static Messages     instance;
+    public static final String                         LINE_SEPARATOR = "%%";
+    public static final String                         MESSAGE_HEADER = "§0§l[§c§lN§6§lCuboid§0§l] §f";
+    public static final Charset                        CHARSET        = Charset.defaultCharset();
 
-    public static Messages getInstance() {
-        if (instance == null) {
-            instance = new Messages();
-        }
-        return instance;
-    }
+    @Getter private static EnumMap<MessageId, Message> messagesMap;                                    // Id ; Message
 
-    @Getter private EnumMap<MessageId, Message> messagesMap; // Id ; Message
-
-    public Messages() {
-        messagesMap = new EnumMap<>(MessageId.class);
-    }
-
-    public void loadConfig(final Path pathMessages) throws IOException {
+    public static void loadConfig(final Path pathMessages) throws IOException {
         messagesMap = getDefaultConfig();
         if (!Files.exists(pathMessages)) {
             newConfig(pathMessages);
@@ -69,7 +60,7 @@ public class Messages {
                 while (reader.ready()) {
                     s.append(reader.readLine() + '\n');
                 }
-                cMessages.loadFromString(s.toString()); // Fails
+                cMessages.loadFromString(s.toString());
             } catch (final Exception e) {
                 e.printStackTrace();
             }
@@ -87,8 +78,11 @@ public class Messages {
         }
     }
 
-    public EnumMap<MessageId, Message> getDefaultConfig() {
+    public static EnumMap<MessageId, Message> getDefaultConfig() {
         final Set<Message> newMessages = new HashSet<Message>();
+
+        // General plugin messages
+        newMessages.add(new Message(MessageId.errorWhileLoadingConfiguration, "&cError while loading config file %filename%", new String[] { "%filename%" }, null));
 
         // General deny response
         newMessages.add(new Message(MessageId.actionCancelledByCuboid, "&cAction cancelled by the cuboid %cuboid%", new String[] { "%cuboid%" }, null));
@@ -115,15 +109,15 @@ public class Messages {
         return map;
     }
 
-    private void newConfig(final Path pathMessages) throws IOException {
+    private static void newConfig(final Path pathMessages) throws IOException {
         writeConfig(pathMessages, false);
     }
 
-    private void overwriteConfig(final Path pathMessages) throws IOException {
+    private static void overwriteConfig(final Path pathMessages) throws IOException {
         writeConfig(pathMessages, true);
     }
 
-    private void writeConfig(final Path pathMessages, final boolean overwrite) throws IOException {
+    private static void writeConfig(final Path pathMessages, final boolean overwrite) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(pathMessages, CHARSET, overwrite ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             final StringBuilder content = new StringBuilder();
             content.append("################################################################################\n");
@@ -140,7 +134,7 @@ public class Messages {
     }
 
     // Args have to be in the same order than in Message.getAwaitedArgs()
-    public String[] get(final MessageId id, final String... args) {
+    public static String[] get(final MessageId id, final String... args) {
         try {
             final Message m = getMessagesMap().get(id);
             if (args != null && args.length != m.getAwaitedArgsNb() || args == null && m.getAwaitedArgsNb() > 0) {
