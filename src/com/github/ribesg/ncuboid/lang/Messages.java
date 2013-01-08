@@ -87,7 +87,6 @@ public class Messages {
         }
     }
 
-    // Precond : fMessages does not exist
     public EnumMap<MessageId, Message> getDefaultConfig() {
         final Set<Message> newMessages = new HashSet<Message>();
 
