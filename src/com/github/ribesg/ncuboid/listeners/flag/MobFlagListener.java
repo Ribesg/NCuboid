@@ -16,9 +16,8 @@ import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.beans.CuboidDB;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.EntityDamageEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PotionSplashEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedEntityDamageEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPotionSplashEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class MobFlagListener extends AbstractListener {
@@ -63,19 +62,21 @@ public class MobFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
-        final EntityDamageEventExtension ext = (EntityDamageEventExtension) EventExtensionHandler.get(event);
-        if (getMobs().contains(event.getDamager()) || ext.isDamagerProjectile() && getMobs().contains(((Projectile) event.getDamager()).getShooter().getType())) {
-            if (ext.getEntityCuboid() != null && ext.getEntityCuboid().getFlag(Flag.MOB) || ext.getDamagerCuboid() != null && ext.getDamagerCuboid().getFlag(Flag.MOB)) {
-                event.setCancelled(true);
+    public void onEntityDamageByEntity(final ExtendedEntityDamageEvent ext) {
+        if (ext.getBaseEvent() instanceof EntityDamageByEntityEvent) {
+            final EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) ext.getBaseEvent();
+            if (getMobs().contains(event.getDamager()) || ext.isDamagerProjectile() && getMobs().contains(((Projectile) event.getDamager()).getShooter().getType())) {
+                if (ext.getEntityCuboid() != null && ext.getEntityCuboid().getFlag(Flag.MOB) || ext.getDamagerCuboid() != null && ext.getDamagerCuboid().getFlag(Flag.MOB)) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPotionSplash(final PotionSplashEvent event) {
+    public void onPotionSplash(final ExtendedPotionSplashEvent ext) {
+        final PotionSplashEvent event = (PotionSplashEvent) ext.getBaseEvent();
         if (getMobs().contains(event.getPotion().getShooter().getType())) {
-            final PotionSplashEventExtension ext = (PotionSplashEventExtension) EventExtensionHandler.get(event);
             if (ext.hasNegativeEffect()) {
                 PlayerCuboid c;
                 for (final LivingEntity e : ext.getEntityCuboidsMap().keySet()) {

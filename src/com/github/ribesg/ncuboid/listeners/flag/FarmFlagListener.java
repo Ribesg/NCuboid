@@ -17,9 +17,8 @@ import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.beans.CuboidDB;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.EntityDamageEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedEntityDamageEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class FarmFlagListener extends AbstractListener {
@@ -50,25 +49,27 @@ public class FarmFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
-        Player p;
-        if (event.getDamager().getType() == EntityType.PLAYER) {
-            p = (Player) event.getDamager();
-        } else if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter().getType() == EntityType.PLAYER) {
-            p = (Player) ((Projectile) event.getDamager()).getShooter();
-        } else {
-            return;
-        }
-        final EntityDamageEventExtension ext = (EntityDamageEventExtension) EventExtensionHandler.get(event);
-        if (getAnimals().contains(event.getEntityType()) && ext.getEntityCuboid() != null && ext.getEntityCuboid().getFlag(Flag.FARM) && !ext.getEntityCuboid().isAllowedPlayer(p)) {
-            event.setCancelled(true);
+    public void onEntityDamageByEntity(final ExtendedEntityDamageEvent ext) {
+        if (ext.getBaseEvent() instanceof EntityDamageByEntityEvent) {
+            final EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) ext.getBaseEvent();
+            Player p;
+            if (event.getDamager().getType() == EntityType.PLAYER) {
+                p = (Player) event.getDamager();
+            } else if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter().getType() == EntityType.PLAYER) {
+                p = (Player) ((Projectile) event.getDamager()).getShooter();
+            } else {
+                return;
+            }
+            if (getAnimals().contains(event.getEntityType()) && ext.getEntityCuboid() != null && ext.getEntityCuboid().getFlag(Flag.FARM) && !ext.getEntityCuboid().isAllowedPlayer(p)) {
+                event.setCancelled(true);
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerInteractEvent(final PlayerInteractEvent event) {
+    public void onPlayerInteractEvent(final ExtendedPlayerInteractEvent ext) {
+        final PlayerInteractEvent event = (PlayerInteractEvent) ext.getBaseEvent();
         if (event.getAction() == Action.PHYSICAL) {
-            final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
             if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.FARM) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())) {
                 event.setCancelled(true);
             }

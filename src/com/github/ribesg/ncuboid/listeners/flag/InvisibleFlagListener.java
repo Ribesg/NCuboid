@@ -14,9 +14,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.github.ribesg.ncore.Permissions;
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.PlayerJoinEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerJoinEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerMoveEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class InvisibleFlagListener extends AbstractListener {
@@ -29,26 +28,24 @@ public class InvisibleFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerMove(final PlayerMoveEvent event) {
-        if (EventExtensionHandler.containsEvent(event)) {
-            final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
-            if (!ext.isCustomCancelled()) {
-                if (invisiblePlayers.contains(event.getPlayer())) {
-                    if (ext.getToCuboid() == null || ext.getToCuboid() != null && !ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
-                        showToAll(event.getPlayer());
-                        invisiblePlayers.remove(event.getPlayer());
-                    }
-                } else if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
-                    hideToAll(event.getPlayer());
-                    invisiblePlayers.add(event.getPlayer());
+    public void onPlayerMove(final ExtendedPlayerMoveEvent ext) {
+        final PlayerMoveEvent event = (PlayerMoveEvent) ext.getBaseEvent();
+        if (!ext.isCustomCancelled()) {
+            if (invisiblePlayers.contains(event.getPlayer())) {
+                if (ext.getToCuboid() == null || ext.getToCuboid() != null && !ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
+                    showToAll(event.getPlayer());
+                    invisiblePlayers.remove(event.getPlayer());
                 }
+            } else if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.INVISIBLE)) {
+                hideToAll(event.getPlayer());
+                invisiblePlayers.add(event.getPlayer());
             }
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerJoin(final PlayerJoinEvent event) {
-        final PlayerJoinEventExtension ext = (PlayerJoinEventExtension) EventExtensionHandler.get(event);
+    public void onPlayerJoin(final ExtendedPlayerJoinEvent ext) {
+        final PlayerJoinEvent event = (PlayerJoinEvent) ext.getBaseEvent();
         if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.INVISIBLE)) {
             invisiblePlayers.add(event.getPlayer());
             hideToAll(event.getPlayer());

@@ -12,8 +12,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEntityEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEntityEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class UseFlagListener extends AbstractListener {
@@ -67,9 +67,9 @@ public class UseFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerInteract(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final ExtendedPlayerInteractEvent ext) {
+        final PlayerInteractEvent event = (PlayerInteractEvent) ext.getBaseEvent();
         if (event.hasBlock()) {
-            final PlayerInteractEntityEventExtension ext = (PlayerInteractEntityEventExtension) EventExtensionHandler.get(event);
             if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.USE) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())
                     && getDenyUseMaterials().contains(event.getClickedBlock().getType())) {
                 event.setCancelled(true);
@@ -78,8 +78,8 @@ public class UseFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerInteractEntity(final PlayerInteractEntityEvent event) {
-        final PlayerInteractEntityEventExtension ext = (PlayerInteractEntityEventExtension) EventExtensionHandler.get(event);
+    public void onPlayerInteractEntity(final ExtendedPlayerInteractEntityEvent ext) {
+        final PlayerInteractEntityEvent event = (PlayerInteractEntityEvent) ext.getBaseEvent();
         if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.USE) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())
                 && getDenyUseEntity().contains(event.getRightClicked().getType())) {
             event.setCancelled(true);

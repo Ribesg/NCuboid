@@ -10,10 +10,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.EntityExplodeEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEntityEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedEntityExplodeEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEntityEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class ChestFlagListener extends AbstractListener {
@@ -24,9 +23,9 @@ public class ChestFlagListener extends AbstractListener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     // We don't care if hasBlock()==false, so ignoreCancelled is true
-    public void onPlayerInteract(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final ExtendedPlayerInteractEvent ext) {
+        final PlayerInteractEvent event = (PlayerInteractEvent) ext.getBaseEvent();
         if (event.hasBlock()) {
-            final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
             if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CHEST) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())) {
                 switch (event.getClickedBlock().getType()) {
                     case CHEST:
@@ -45,8 +44,8 @@ public class ChestFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerInteractEntity(final PlayerInteractEntityEvent event) {
-        final PlayerInteractEntityEventExtension ext = (PlayerInteractEntityEventExtension) EventExtensionHandler.get(event);
+    public void onPlayerInteractEntity(final ExtendedPlayerInteractEntityEvent ext) {
+        final PlayerInteractEntityEvent event = (PlayerInteractEntityEvent) ext.getBaseEvent();
         if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CHEST) && !ext.getCuboid().isAllowedPlayer(event.getPlayer())) {
             switch (event.getRightClicked().getType()) {
                 case ITEM_FRAME:
@@ -62,8 +61,8 @@ public class ChestFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityExplode(final EntityExplodeEvent event) {
-        final EntityExplodeEventExtension ext = (EntityExplodeEventExtension) EventExtensionHandler.get(event);
+    public void onEntityExplode(final ExtendedEntityExplodeEvent ext) {
+        final EntityExplodeEvent event = (EntityExplodeEvent) ext.getBaseEvent();
         for (final Block b : ext.getBlockCuboidsMap().keySet()) {
             if (ext.getBlockCuboidsMap().get(b).getFlag(Flag.CHEST)) {
                 switch (b.getType()) {

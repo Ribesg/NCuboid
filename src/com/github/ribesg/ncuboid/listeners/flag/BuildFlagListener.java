@@ -21,9 +21,8 @@ import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
 import com.github.ribesg.ncuboid.beans.CuboidDB;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.HangingBreakEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedHangingBreakEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEvent;
 import com.github.ribesg.ncuboid.lang.Messages.MessageId;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
@@ -34,36 +33,36 @@ public class BuildFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event) {
-        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
+    public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent ext) {
+        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getBlockClicked().getRelative(ext.getBlockFace()).getLocation());
         if (cuboid == null) {
             return;
-        } else if (cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(event.getPlayer())) {
-            getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-            event.setCancelled(true);
+        } else if (cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(ext.getPlayer())) {
+            getPlugin().sendMessage(ext.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
+            ext.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerBucketFill(final PlayerBucketFillEvent event) {
-        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlockClicked().getLocation());
+    public void onPlayerBucketFill(final PlayerBucketFillEvent ext) {
+        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getBlockClicked().getLocation());
         if (cuboid == null) {
             return;
-        } else if (cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(event.getPlayer())) {
-            getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-            event.setCancelled(true);
+        } else if (cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(ext.getPlayer())) {
+            getPlugin().sendMessage(ext.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
+            ext.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     // We don't care if hasBlock()==false, so ignoreCancelled is true
-    public void onPlayerInteract(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final ExtendedPlayerInteractEvent ext) {
+        final PlayerInteractEvent event = (PlayerInteractEvent) ext.getBaseEvent();
         if (event.hasBlock()) {
             if (event.hasItem() && event.getItem().getType() == Material.STICK) {
                 // Handled in PlayerStickListener
                 return;
             }
-            final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasItem()) {
                 // Fire or vehicle
                 if (event.getItem().getType() == Material.FLINT_AND_STEEL || event.getItem().getType() == Material.FIREBALL
@@ -96,78 +95,80 @@ public class BuildFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onBlockBreak(final BlockBreakEvent event) {
-        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
-        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(event.getPlayer())) {
-            getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-            event.setCancelled(true);
+    public void onBlockBreak(final BlockBreakEvent ext) {
+        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getBlock().getLocation());
+        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(ext.getPlayer())) {
+            getPlugin().sendMessage(ext.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
+            ext.setCancelled(true);
             return;
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onBlockPlace(final BlockPlaceEvent event) {
-        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
-        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(event.getPlayer())) {
-            getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-            event.setCancelled(true);
+    public void onBlockPlace(final BlockPlaceEvent ext) {
+        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getBlock().getLocation());
+        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(ext.getPlayer())) {
+            getPlugin().sendMessage(ext.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
+            ext.setCancelled(true);
             return;
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onBlockDamage(final BlockDamageEvent event) {
-        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getBlock().getLocation());
-        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(event.getPlayer())) {
-            getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-            event.setCancelled(true);
+    public void onBlockDamage(final BlockDamageEvent ext) {
+        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getBlock().getLocation());
+        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(ext.getPlayer())) {
+            getPlugin().sendMessage(ext.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
+            ext.setCancelled(true);
             return;
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onHangingBreakByEntity(final HangingBreakByEntityEvent event) {
-        final HangingBreakEventExtension ext = (HangingBreakEventExtension) EventExtensionHandler.get(event);
-        if (event.getRemover().getType() == EntityType.PLAYER) {
-            final Player player = (Player) event.getRemover();
-            if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.BUILD) && !ext.getCuboid().isAllowedPlayer(player)) {
-                getPlugin().sendMessage(player, MessageId.actionCancelledByCuboid, ext.getCuboid().getCuboidName());
-                event.setCancelled(true);
-                return;
+    public void onHangingBreakByEntity(final ExtendedHangingBreakEvent ext) {
+        if (ext.getBaseEvent() instanceof HangingBreakByEntityEvent) {
+            final HangingBreakByEntityEvent event = (HangingBreakByEntityEvent) ext.getBaseEvent();
+            if (event.getRemover().getType() == EntityType.PLAYER) {
+                final Player player = (Player) event.getRemover();
+                if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.BUILD) && !ext.getCuboid().isAllowedPlayer(player)) {
+                    getPlugin().sendMessage(player, MessageId.actionCancelledByCuboid, ext.getCuboid().getCuboidName());
+                    event.setCancelled(true);
+                    return;
+                }
             }
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onHangingPlace(final HangingPlaceEvent event) {
-        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getEntity().getLocation());
-        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(event.getPlayer())) {
-            getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-            event.setCancelled(true);
+    public void onHangingPlace(final HangingPlaceEvent ext) {
+        final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getEntity().getLocation());
+        if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(ext.getPlayer())) {
+            getPlugin().sendMessage(ext.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
+            ext.setCancelled(true);
             return;
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onVehicleDestroy(final VehicleDestroyEvent event) {
-        if (event.getAttacker().getType() == EntityType.PLAYER) {
-            final Player player = (Player) event.getAttacker();
-            final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getVehicle().getLocation());
+    public void onVehicleDestroy(final VehicleDestroyEvent ext) {
+        if (ext.getAttacker().getType() == EntityType.PLAYER) {
+            final Player player = (Player) ext.getAttacker();
+            final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getVehicle().getLocation());
             if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(player)) {
                 getPlugin().sendMessage(player, MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-                event.setCancelled(true);
+                ext.setCancelled(true);
                 return;
             }
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onStructureGrow(final StructureGrowEvent event) {
-        if (event.isFromBonemeal()) {
-            final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(event.getLocation());
-            if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(event.getPlayer())) {
-                getPlugin().sendMessage(event.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
-                event.setCancelled(true);
+    public void onStructureGrow(final StructureGrowEvent ext) {
+        if (ext.isFromBonemeal()) {
+            final PlayerCuboid cuboid = CuboidDB.getInstance().getPriorByLoc(ext.getLocation());
+            if (cuboid != null && cuboid.getFlag(Flag.BUILD) && !cuboid.isAllowedPlayer(ext.getPlayer())) {
+                getPlugin().sendMessage(ext.getPlayer(), MessageId.actionCancelledByCuboid, cuboid.getCuboidName());
+                ext.setCancelled(true);
                 return;
             }
         }

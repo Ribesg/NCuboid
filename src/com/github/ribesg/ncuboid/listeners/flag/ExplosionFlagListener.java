@@ -7,8 +7,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.EntityExplodeEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedEntityExplodeEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class ExplosionFlagListener extends AbstractListener {
@@ -18,8 +17,8 @@ public class ExplosionFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityExplode(final EntityExplodeEvent event) {
-        final EntityExplodeEventExtension ext = (EntityExplodeEventExtension) EventExtensionHandler.get(event);
+    public void onEntityExplode(final ExtendedEntityExplodeEvent ext) {
+        final EntityExplodeEvent event = (EntityExplodeEvent) ext.getBaseEvent();
         for (final Block b : ext.getBlockCuboidsMap().keySet()) {
             if (ext.getBlockCuboidsMap().get(b).getFlag(Flag.EXPLOSION)) {
                 event.blockList().remove(b);

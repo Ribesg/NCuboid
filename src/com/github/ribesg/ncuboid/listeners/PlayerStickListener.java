@@ -17,8 +17,7 @@ import com.github.ribesg.ncuboid.beans.CuboidDB;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid;
 import com.github.ribesg.ncuboid.beans.PlayerCuboid.CuboidState;
 import com.github.ribesg.ncuboid.beans.RectCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEvent;
 import com.github.ribesg.ncuboid.lang.Messages;
 import com.github.ribesg.ncuboid.lang.Messages.MessageId;
 
@@ -29,12 +28,12 @@ public class PlayerStickListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerInteract(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final ExtendedPlayerInteractEvent ext) {
+        final PlayerInteractEvent event = (PlayerInteractEvent) ext.getBaseEvent();
         if (event.hasItem() && event.getItem().getType() == Material.STICK) {
             final Action action = event.getAction();
             final Player p = event.getPlayer();
             if (event.hasBlock()) {
-                final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
                 if (action == Action.RIGHT_CLICK_BLOCK) {
                     // Selection tool
                     final RectCuboid selection = (RectCuboid) CuboidDB.getInstance().getTmp(p.getName());

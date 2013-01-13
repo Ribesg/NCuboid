@@ -10,11 +10,10 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.PlayerDropItemEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEntityEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerInteractEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerDropItemEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEntityEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerInteractEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerMoveEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class CreativeFlagListener extends AbstractListener {
@@ -24,20 +23,18 @@ public class CreativeFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerMoveBlock(final PlayerMoveEvent event) {
-        if (EventExtensionHandler.containsEvent(event)) {
-            final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
-            if (!ext.isCustomCancelled()) {
-                // TODO Handle player GameMode
-            }
+    public void onPlayerMoveBlock(final ExtendedPlayerMoveEvent ext) {
+        @SuppressWarnings("unused")
+        final PlayerMoveEvent event = (PlayerMoveEvent) ext.getBaseEvent();
+        if (!ext.isCustomCancelled()) {
+            // TODO Handle player GameMode
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    // We don't care if hasBlock()==false, so ignoreCancelled is true
-    public void onPlayerInteract(final PlayerInteractEvent event) {
+    public void onPlayerInteract(final ExtendedPlayerInteractEvent ext) {
+        final PlayerInteractEvent event = (PlayerInteractEvent) ext.getBaseEvent();
         if (event.hasBlock()) {
-            final PlayerInteractEventExtension ext = (PlayerInteractEventExtension) EventExtensionHandler.get(event);
             if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CREATIVE)) {
                 switch (event.getClickedBlock().getType()) {
                     case CHEST:
@@ -56,8 +53,8 @@ public class CreativeFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerInteractEntity(final PlayerInteractEntityEvent event) {
-        final PlayerInteractEntityEventExtension ext = (PlayerInteractEntityEventExtension) EventExtensionHandler.get(event);
+    public void onPlayerInteractEntity(final ExtendedPlayerInteractEntityEvent ext) {
+        final PlayerInteractEntityEvent event = (PlayerInteractEntityEvent) ext.getBaseEvent();
         if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.CHEST)) {
             switch (event.getRightClicked().getType()) {
                 case ITEM_FRAME:
@@ -73,8 +70,8 @@ public class CreativeFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerDropItem(final PlayerDropItemEvent event) {
-        final PlayerDropItemEventExtension ext = (PlayerDropItemEventExtension) EventExtensionHandler.get(event);
+    public void onPlayerDropItem(final ExtendedPlayerDropItemEvent ext) {
+        final PlayerDropItemEvent event = (PlayerDropItemEvent) ext.getBaseEvent();
         if (ext.getPlayerCuboid() != null && ext.getPlayerCuboid().getFlag(Flag.CREATIVE)) {
             event.setCancelled(true);
         }

@@ -14,9 +14,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ribesg.ncore.nodes.cuboid.beans.Flag;
 import com.github.ribesg.ncuboid.NCuboid;
-import com.github.ribesg.ncuboid.events.EventExtensionHandler;
-import com.github.ribesg.ncuboid.events.extensions.PlayerJoinEventExtension;
-import com.github.ribesg.ncuboid.events.extensions.PlayerMoveEventExtension;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedEntityDamageEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerJoinEvent;
+import com.github.ribesg.ncuboid.events.extensions.ExtendedPlayerMoveEvent;
 import com.github.ribesg.ncuboid.listeners.AbstractListener;
 
 public class GodFlagListener extends AbstractListener {
@@ -29,23 +29,22 @@ public class GodFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerMove(final PlayerMoveEvent event) {
-        if (EventExtensionHandler.containsEvent(event)) {
-            final PlayerMoveEventExtension ext = (PlayerMoveEventExtension) EventExtensionHandler.get(event);
-            if (!ext.isCustomCancelled()) {
-                if (godPlayers.contains(event.getPlayer())) {
-                    if (ext.getToCuboid() == null || ext.getToCuboid() != null && !ext.getToCuboid().getFlag(Flag.GOD)) {
-                        godPlayers.remove(event.getPlayer());
-                    }
-                } else if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.GOD)) {
-                    godPlayers.add(event.getPlayer());
+    public void onPlayerMove(final ExtendedPlayerMoveEvent ext) {
+        final PlayerMoveEvent event = (PlayerMoveEvent) ext.getBaseEvent();
+        if (!ext.isCustomCancelled()) {
+            if (godPlayers.contains(event.getPlayer())) {
+                if (ext.getToCuboid() == null || ext.getToCuboid() != null && !ext.getToCuboid().getFlag(Flag.GOD)) {
+                    godPlayers.remove(event.getPlayer());
                 }
+            } else if (ext.getToCuboid() != null && ext.getToCuboid().getFlag(Flag.GOD)) {
+                godPlayers.add(event.getPlayer());
             }
         }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityDamage(final EntityDamageEvent event) {
+    public void onEntityDamage(final ExtendedEntityDamageEvent ext) {
+        final EntityDamageEvent event = (EntityDamageEvent) ext.getBaseEvent();
         if (event.getEntityType() == EntityType.PLAYER) {
             if (godPlayers.contains(event.getEntity())) {
                 event.setCancelled(true);
@@ -54,8 +53,8 @@ public class GodFlagListener extends AbstractListener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerJoin(final PlayerJoinEvent event) {
-        final PlayerJoinEventExtension ext = (PlayerJoinEventExtension) EventExtensionHandler.get(event);
+    public void onPlayerJoin(final ExtendedPlayerJoinEvent ext) {
+        final PlayerJoinEvent event = (PlayerJoinEvent) ext.getBaseEvent();
         if (ext.getCuboid() != null && ext.getCuboid().getFlag(Flag.INVISIBLE)) {
             godPlayers.add(event.getPlayer());
         }
